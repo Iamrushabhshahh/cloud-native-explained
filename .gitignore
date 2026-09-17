@@ -1,0 +1,3 @@
+dist/
+.cache-glossary/
+node_modules/
