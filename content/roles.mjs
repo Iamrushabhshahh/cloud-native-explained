@@ -127,7 +127,7 @@ export const ROLES = [
       { t: 'Developer portals and service catalogues (Backstage)' },
       { t: 'Cost and capacity as a platform concern, not an afterthought' },
     ],
-    cert: { name: 'CNPE', full: 'Certified Cloud Native Platform Engineer', go: '/go/cnpe/' },
+    cert: { name: 'CNPE', full: 'Certified Cloud Native Platform Engineer', page: '/linux-foundation-coupon/cnpe/' },
     verdict: 'The newest and most senior of these, and the only one aimed at design judgement rather than operation. Worth it once you are already doing platform work; it is a poor first certification because it assumes everything in the administrator path.',
   },
   {
@@ -141,8 +141,8 @@ export const ROLES = [
       { t: 'Secrets in a Git-driven world, done without leaking them' },
       { t: 'Rollback you have actually rehearsed' },
     ],
-    cert: { name: 'CGOA', full: 'Certified GitOps Associate', go: '/go/cgoa/' },
-    alt: { name: 'CAPA', full: 'Certified Argo Project Associate', go: '/go/capa/' },
+    cert: { name: 'CGOA', full: 'Certified GitOps Associate', page: '/linux-foundation-coupon/cgoa/' },
+    alt: { name: 'CAPA', full: 'Certified Argo Project Associate', page: '/linux-foundation-coupon/capa/' },
     verdict: 'CGOA covers the principles and is tool-agnostic; CAPA is specifically Argo. Both are associate-level multiple choice. If your shop already runs Argo, CAPA is the more immediately useful of the two, but neither is a hiring signal on the level of CKA.',
   },
   {
@@ -156,8 +156,8 @@ export const ROLES = [
       { t: 'eBPF as an alternative to iptables-based datapaths' },
       { t: 'Debugging DNS, because it is usually DNS' },
     ],
-    cert: { name: 'ICA', full: 'Istio Certified Associate', go: '/go/ica/' },
-    alt: { name: 'CCA', full: 'Cilium Certified Associate', go: '/go/cca/' },
+    cert: { name: 'ICA', full: 'Istio Certified Associate', page: '/linux-foundation-coupon/ica/' },
+    alt: { name: 'CCA', full: 'Cilium Certified Associate', page: '/linux-foundation-coupon/cca/' },
     verdict: 'Both are tool-specific, so pick the one you actually run rather than the one that sounds better. If you run neither, learn the CNI layer properly first; a mesh certification on top of shaky networking fundamentals is a bad trade.',
   },
   {
@@ -171,6 +171,7 @@ export const ROLES = [
       { t: 'Cost control, because this is where cloud bills go to die' },
     ],
     cert: { name: 'MCPA', full: 'Model Context Protocol Associate', page: '/linux-foundation-coupon/mcpa/' },
+    alt: { name: 'PTCA', full: 'PyTorch Certified Associate', page: '/linux-foundation-coupon/ptca/' },
     verdict: 'Brand new, launched September 2026, and the first certification against MCP. Beginner level and multiple choice, so treat it as evidence you have thought about the protocol and its trust model, not as a senior credential. Half the exam is runtime behaviour and security, which is the half people get wrong.',
   },
   {
