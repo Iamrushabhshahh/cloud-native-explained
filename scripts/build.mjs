@@ -1,6 +1,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { PARTS, PLANNED } from '../content/path.mjs';
+import { ROLES } from '../content/roles.mjs';
 
 const ROOT = path.resolve(import.meta.dirname, '..');
 const OUT = path.join(ROOT, 'dist');
@@ -30,6 +31,32 @@ if (violations.length) {
   console.error('\nORDER VIOLATION: an acronym is used before the path introduces it\n');
   violations.forEach(v => console.error('  ' + v));
   console.error('\nEither move the concept later, or coin the acronym earlier.\n');
+  process.exit(1);
+}
+
+/* Second gate: role steps link into the path by concept id. A renamed concept
+   would otherwise silently orphan a step and the reader would click nothing. */
+const conceptIds = new Set(concepts.map(c => c.id));
+const orphans = [];
+for (const r of ROLES) for (const st of r.steps) if (st.c && !conceptIds.has(st.c)) orphans.push(`${r.id} -> ${st.c}`);
+if (orphans.length) {
+  console.error('\nBROKEN ROLE LINK: a roadmap step points at a concept that does not exist\n');
+  orphans.forEach(o => console.error('  ' + o));
+  process.exit(1);
+}
+
+/* Third gate: no prices in this repo. The coupon pages are verified daily and
+   are the only source of truth; a stale price on a roadmap nobody rebuilds is
+   worse than no price at all. */
+const priced = [];
+for (const r of ROLES) {
+  const blob = JSON.stringify(r);
+  const m = blob.match(/\$\s?\d[\d,]*/g);
+  if (m) priced.push(`${r.id}: ${m.join(', ')}`);
+}
+if (priced.length) {
+  console.error('\nPRICE IN ROADMAP: prices belong on the coupon pages, which are verified daily\n');
+  priced.forEach(o => console.error('  ' + o));
   process.exit(1);
 }
 
@@ -72,6 +99,36 @@ const conceptHtml = (c, i) => `
   </div>
 </article>`;
 
+const SITE = 'https://rushabhshah.dev';
+/* Certs without a dedicated page go to the coupon hub, never to a /go/ redirect.
+   A /go/ link is a noindex bounce straight to the affiliate network: the reader
+   loses the explanation, and the page that would have shown them the evergreen
+   code never loads. The hub lists every cert in its pricing table, so it is a
+   worse landing than a dedicated page and a much better one than no page. */
+const certLink = (c) => c.page ? `${SITE}${c.page}` : `${SITE}/linux-foundation-coupon/`;
+
+/* Surfaced at build time so the gap is visible rather than quietly tolerated. */
+const noPage = [...new Set(ROLES.flatMap(r => [r.cert, r.alt].filter(Boolean)).filter(c => !c.page).map(c => c.name))];
+
+const roleHtml = (r) => `
+<article class="role" id="role-${r.id}" data-role="${esc(r.id)}">
+  <header class="rh">
+    <h3>${esc(r.title)}</h3>
+    <p class="rt">${esc(r.tagline)}</p>
+  </header>
+  <p class="rj">${esc(r.job)}</p>
+  <ol class="rsteps">
+    ${r.steps.map(st => `<li>${st.c ? `<a href="#${st.c}">${esc(st.t)}</a>` : esc(st.t)}</li>`).join('')}
+  </ol>
+  <div class="rcert">
+    <span class="rcl">Ends at</span>
+    <a class="rcn" href="${certLink(r.cert)}">${esc(r.cert.name)}</a>
+    <span class="rcf">${esc(r.cert.full)}</span>
+    ${r.alt ? `<span class="rca">or <a href="${certLink(r.alt)}">${esc(r.alt.name)}</a>, ${esc(r.alt.full)}</span>` : ''}
+  </div>
+  <p class="rv"><span>Is it worth it</span>${esc(r.verdict)}</p>
+</article>`;
+
 const partHtml = (p) => `
 <section class="part" id="${p.id}">
   <header class="ph">
@@ -106,6 +163,7 @@ const html = `<!DOCTYPE html>
 <nav id="nav"><div class="navin">
   <span class="brand">Cloud Native, Explained</span>
   ${PARTS.map(p => `<a href="#${p.id}">${p.num}. ${esc(p.title)}</a>`).join('')}
+  <a href="#roles">Roles</a>
   <a href="#glossary">Glossary</a>
   <button id="theme" type="button" aria-label="Switch theme">◐</button>
 </div></nav>
@@ -119,12 +177,24 @@ const html = `<!DOCTYPE html>
       <span class="fact"><b>${concepts.length}</b> concepts</span>
       <span class="fact"><b>${coinedBy.size}</b> acronyms, each introduced in order</span>
       <span class="fact"><b>${Object.keys(G.en).length}</b> glossary terms</span>
+      <span class="fact"><b>${ROLES.length}</b> role roadmaps</span>
       <span class="fact"><b>${Object.keys(G.hi).length}</b> also in Hindi</span>
     </div>
     <p class="unoff">Not affiliated with or endorsed by the CNCF or the Linux Foundation. Definitions are reused from the <a href="https://github.com/cncf/glossary">CNCF Cloud Native Glossary</a> under Apache-2.0, with thanks.</p>
   </header>
 
   ${PARTS.map(partHtml).join('')}
+
+  <section class="part" id="roles">
+    <header class="ph"><span class="pn">Roles</span><h2>Where each path actually ends</h2>
+    <p class="pb">Twelve roles, what you learn in order, and the certification that attests to it. Every step links back into the path above. The verdict on each certification is honest, including the ones where the answer is do not bother.</p></header>
+    <div class="rfilter" role="group" aria-label="Filter roles">
+      <button class="rf on" data-r="all" type="button">All ${ROLES.length}</button>
+      ${ROLES.map(r => `<button class="rf" data-r="${esc(r.id)}" type="button">${esc(r.title)}</button>`).join('')}
+    </div>
+    <div class="roles">${ROLES.map(roleHtml).join('')}</div>
+    <p class="disclose">Certification links go to my own pages, which carry a partner discount code. I earn a commission if you buy through them, at no extra cost to you. That is also why the verdicts above say when to skip one: a roadmap where every road happens to end in something for sale is not a roadmap.</p>
+  </section>
 
   <section class="part planned" id="planned">
     <header class="ph"><span class="pn">Next</span><h2>Still being written</h2>
@@ -159,4 +229,5 @@ const html = `<!DOCTYPE html>
 
 fs.mkdirSync(OUT, { recursive: true });
 fs.writeFileSync(path.join(OUT, 'index.html'), html);
-console.log(`built dist/index.html — ${concepts.length} concepts, ${coinedBy.size} acronyms, ${vocab.size} hover terms, ${Math.round(html.length / 1024)} KB`);
+if (noPage.length) console.log(`note: ${noPage.length} certs have no dedicated page, linked to the hub instead: ${noPage.join(', ')}`);
+console.log(`built dist/index.html — ${ROLES.length} roles, ${concepts.length} concepts, ${coinedBy.size} acronyms, ${vocab.size} hover terms, ${Math.round(html.length / 1024)} KB`);

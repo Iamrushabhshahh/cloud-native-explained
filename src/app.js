@@ -102,3 +102,19 @@
     t.textContent = next === 'dark' ? '●' : next === 'light' ? '○' : '◐';
   });
 })();
+
+/* role filter. Plain hidden toggling rather than re-rendering, so deep links to
+   a single role (#role-k8s-admin) still resolve after filtering. */
+(function () {
+  var btns = [].slice.call(document.querySelectorAll('.rf'));
+  if (!btns.length) return;
+  btns.forEach(function (b) {
+    b.addEventListener('click', function () {
+      var want = b.dataset.r;
+      btns.forEach(function (x) { x.classList.toggle('on', x === b); });
+      document.querySelectorAll('.role').forEach(function (r) {
+        r.hidden = want !== 'all' && r.dataset.role !== want;
+      });
+    });
+  });
+})();
