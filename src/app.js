@@ -95,7 +95,7 @@
   if (t) t.addEventListener('click', function () {
     var h = document.documentElement;
     var next = h.dataset.pref === 'dark' ? 'light' : h.dataset.pref === 'light' ? 'system' : 'dark';
-    try { localStorage.setItem('cne-theme', next); } catch (e) {}
+    try { localStorage.setItem('theme', next); } catch (e) {}
     h.dataset.pref = next;
     var r = next === 'system' ? (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : next;
     h.dataset.theme = r; h.style.colorScheme = r;

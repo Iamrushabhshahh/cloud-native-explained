@@ -139,7 +139,19 @@ const partHtml = (p) => `
   ${p.concepts.map(conceptHtml).join('')}
 </section>`;
 
-const css = fs.readFileSync(path.join(ROOT, 'src', 'style.css'), 'utf8');
+/* The site's own stylesheet is the source of truth for the theme: palette
+   tokens, the three-state light/system/dark switch, the self-hosted fonts, the
+   terminal motif. Copying it in rather than re-implementing it is the only way
+   this does not drift out of sync the next time style.css changes. In
+   production this page lives on rushabhshah.dev and can simply link /style.css;
+   the copy exists so the local preview looks identical. */
+const SITE_ROOT = path.resolve(ROOT, '..', 'iamrushabhshahh.github.io');
+const siteCss = fs.readFileSync(path.join(SITE_ROOT, 'style.css'), 'utf8');
+fs.mkdirSync(path.join(OUT, 'assets', 'fonts'), { recursive: true });
+for (const f of fs.readdirSync(path.join(SITE_ROOT, 'assets', 'fonts'))) {
+  fs.copyFileSync(path.join(SITE_ROOT, 'assets', 'fonts', f), path.join(OUT, 'assets', 'fonts', f));
+}
+const css = siteCss + '\n' + fs.readFileSync(path.join(ROOT, 'src', 'style.css'), 'utf8');
 const js = fs.readFileSync(path.join(ROOT, 'src', 'app.js'), 'utf8');
 
 const html = `<!DOCTYPE html>
@@ -150,10 +162,7 @@ const html = `<!DOCTYPE html>
 <title>Cloud Native, Explained</title>
 <meta name="description" content="A guided path through cloud native: every acronym earned before it is used, and defined where it appears. Built on CNCF's own open glossary.">
 <meta name="robots" content="noindex,nofollow">
-<script>(function(){try{var p=localStorage.getItem('cne-theme');if(p!=='light'&&p!=='dark')p='system';var r=p==='system'?(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light'):p;var h=document.documentElement;h.dataset.theme=r;h.dataset.pref=p;h.style.colorScheme=r;}catch(e){}})();</script>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Instrument+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap">
+<script>(function(){try{var p=localStorage.getItem('theme');if(p!=='light'&&p!=='dark')p='system';var r=p==='system'?(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light'):p;var h=document.documentElement;h.dataset.theme=r;h.dataset.pref=p;h.style.colorScheme=r;}catch(e){}})();</script>
 <style>${css}</style>
 </head>
 <body>
