@@ -180,12 +180,118 @@ export const PARTS = [
       },
     ],
   },
+  {
+    id: 'layers', num: 4, title: 'The layers above',
+    blurb: 'Six jobs that sit on top of the interfaces, and the projects you would actually reach for in each. Named in context, not as a list to memorise.',
+    concepts: [
+      {
+        id: 'networking-mesh', title: 'Networking and service mesh',
+        one: 'Getting packets between pods is solved. Deciding what should be allowed, retried or encrypted is not.',
+        para: 'Your [[cni|CNI]] plugin already gives every pod an address and a route. A mesh is what you add when that is not enough: mutual TLS between services so traffic is encrypted and identified, retries and timeouts applied consistently instead of reimplemented in six languages, and traffic splitting so you can send 5% of requests to a new version. Istio and Linkerd do this with a sidecar proxy next to each pod. Cilium does much of it in the kernel with eBPF and no sidecar.',
+        deep: 'The honest version: a mesh is a lot of machinery, and plenty of teams adopt one before they have the problem it solves. The question worth asking is whether you currently have retry logic, timeout logic and TLS handling copy-pasted across services in different languages, drifting apart. If yes, a mesh pays for itself. If you have four services and one language, it is a second control plane to operate for benefits you could get from a shared library. Start with Gateway API for ingress and add a mesh when the pain is real.',
+        terms: ['service-mesh', 'service-proxy', 'sidecar-container'],
+        coins: [{ short: 'mTLS', long: 'mutual TLS', gloss: 'Both sides of a connection present a certificate, so services prove who they are to each other rather than only the server proving it to the client.' }],
+      },
+      {
+        id: 'storage-layer', title: 'Storage',
+        one: 'Somebody has to decide what happens to your data when the pod holding it is rescheduled.',
+        para: 'Above [[csi|CSI]] sit the systems that actually hold bytes. Rook runs Ceph inside your cluster. Longhorn gives you replicated block storage from the disks already in your nodes. OpenEBS does container-attached storage. MinIO serves an S3-compatible object API. Each solves a different shape of problem, and the shape matters more than the feature list.',
+        deep: 'Two questions decide most of this, and almost nobody asks them in order. First: does this data need to survive the cluster, or only the pod? Those are very different requirements, and the second is much cheaper. Second: are you running on a cloud that already has good managed storage? If you are, running your own distributed storage inside Kubernetes is a large operational commitment you are choosing rather than being forced into. Storage is the one layer where "boring and managed" is usually the correct engineering answer.',
+        terms: ['persistent-storage', 'persistent-volume', 'stateful-apps'],
+        coins: [],
+      },
+      {
+        id: 'observability-layer', title: 'Observability',
+        one: 'Not three pillars. One question: can you find out what is happening without shipping new code?',
+        para: 'Prometheus scrapes and stores metrics and gives you PromQL to ask questions of them. OpenTelemetry is the vendor-neutral way to produce traces, metrics and logs so you are not locked into whoever you picked first. Grafana draws it. Loki holds logs, Tempo holds traces, Jaeger traces too, Fluentd and Fluent Bit move logs around. Cortex, Thanos and Mimir exist because a single Prometheus eventually is not enough.',
+        deep: 'The "three pillars" framing is popular and slightly misleading, because it makes you feel done once you have all three. You are not done when you have metrics, logs and traces. You are done when someone paged at 2am can answer "what changed and what is it touching" in a few minutes. I have written up [an incident where every dashboard was green and the cause was DNS](/blog/dns-storm-eai-again/), a resource nobody had a graph for. The gap is almost never a missing pillar. It is a missing question nobody thought to ask in advance.',
+        terms: ['observability', 'monitoring', 'distributed-tracing'],
+        coins: [{ short: 'SLO', long: 'service level objective', gloss: 'A target for how reliable something should be, stated as a number, so "is this acceptable" has an answer instead of an argument.' }],
+      },
+      {
+        id: 'delivery-layer', title: 'Delivery and GitOps',
+        one: 'Git holds the desired state. A controller in the cluster makes reality match it.',
+        para: 'This is the [[reconciliation|reconciliation loop]] again with Git as the source of truth. Argo CD and Flux both watch a repository and apply what they find, then keep applying it. Helm packages manifests into charts with values you can override. Kustomize layers patches over a base without templating. Argo Rollouts and Flagger do canary and blue-green releases with real signals deciding whether to continue.',
+        deep: 'The thing GitOps actually buys you is not automation. It is that your cluster stops being a place where state accumulates from forgotten kubectl commands. Every change has an author, a review and a revert. The cost is real too: secrets get awkward, and the day a controller is syncing something you urgently need to change by hand, you will feel it. Sealed Secrets and External Secrets Operator exist because this problem is universal, and neither is free of trade-offs.',
+        terms: ['gitops', 'continuous-delivery', 'declarative-configuration'],
+        coins: [],
+      },
+      {
+        id: 'security-layer', title: 'Security and the supply chain',
+        one: 'Two separate problems: what a running workload can reach, and whether you can prove what you are running.',
+        para: 'At runtime: OPA and Kyverno enforce policy at admission so a non-conforming workload never starts. Falco watches for suspicious behaviour once things are running. SPIFFE and SPIRE give workloads cryptographic identity, which is what [[mTLS|mTLS]] needs underneath it. On the supply chain side: sigstore signs artefacts, in-toto attests to how they were built, and an SBOM records what is actually inside an image.',
+        deep: 'Supply chain security got serious attention after a run of incidents where the compromise was upstream of everyone affected, and the honest summary is that most organisations are still at step one. Step one is not signing. Step one is knowing what you run: which images, built from what, pulled from where. An SBOM nobody reads is still more useful than not having one, because the day a CVE lands in a library you did not know you shipped, the difference between an afternoon and a fortnight is whether that inventory exists.',
+        terms: ['zero-trust-architecture', 'policy-as-code', 'shift-left'],
+        coins: [{ short: 'SBOM', long: 'software bill of materials', gloss: 'A machine-readable inventory of everything inside an artefact, so you can answer "do we ship this vulnerable library" without guessing.' }],
+      },
+      {
+        id: 'platform-layer', title: 'Platform and developer experience',
+        one: 'The layer whose users are other engineers, and whose success is measured in how little they need to know.',
+        para: 'Backstage gives you a developer portal and a service catalogue. Crossplane lets you provision cloud infrastructure through the Kubernetes API using [[crd-operators|custom resources]]. Knative handles serverless workloads and scale-to-zero. KEDA scales on queue depth and other event sources rather than CPU. Together these are the pieces most internal platforms are assembled from.',
+        deep: 'Platform engineering goes wrong in a specific and predictable way: the platform team builds the abstraction they find interesting instead of the one their users are stuck on. The test I would apply is whether a new engineer can ship a service to production on day two without reading your documentation twice. If the answer is no, adding Backstage does not fix it. The paved road has to be genuinely easier than going around it, or people go around it, and then you have a platform and a shadow platform.',
+        terms: ['platform-engineering', 'serverless', 'auto-scaling'],
+        coins: [],
+      },
+    ],
+  },
+  {
+    id: 'governance', num: 5, title: 'Governance and people',
+    blurb: 'Who decides what, how a project moves up, and how you get from reading this to having commit rights. The part almost no guide covers, and the part that decides whether a project is safe to depend on.',
+    concepts: [
+      {
+        id: 'who-decides', title: 'Who actually decides things',
+        one: 'Three bodies, three completely different jobs, and confusing them is the usual mistake.',
+        para: 'The Governing Board handles money, marketing and membership. It does not decide technical direction. The Technical Oversight Committee does: it accepts projects, moves them between maturity levels, and defines what cloud native means in practice. CNCF staff run the events, the infrastructure and the programmes. Members pay to fund it, and paying more does not buy technical control, which is the arrangement the whole thing depends on.',
+        deep: 'That separation is not bureaucratic decoration, it is the product. A company can put its infrastructure on a CNCF project because no amount of platinum membership lets a vendor overrule the TOC on technical direction. When you evaluate any open source foundation, this is the structure to look for first, and its absence is the thing that has bitten organisations before.',
+        terms: [],
+        coins: [{ short: 'TOC', long: 'Technical Oversight Committee', gloss: 'The elected body that accepts CNCF projects, promotes them between maturity levels and defines the technical scope. Separate from the Governing Board, which handles money.' }],
+      },
+      {
+        id: 'tags', title: 'TAGs, and where the work actually happens',
+        one: 'Working groups that do the technical legwork the TOC cannot do alone.',
+        para: 'Technical Advisory Groups are where domain expertise lives. As of now there are five: Developer Experience, Infrastructure, Operational Resilience, Security and Compliance, and Workloads Foundation. They review projects applying for incubation or graduation, publish guidance, and run working groups on specific problems. They are open, and turning up to a TAG call is one of the lowest-friction ways into the community that exists.',
+        deep: 'Two things worth knowing. First, this structure has been reorganised before: there used to be more TAGs with narrower scopes, and they were consolidated. Any guide telling you the old list confidently is out of date, which is a decent reason to check cncf/toc rather than trust a blog post, including this one. Second, TAG review is a real gate. When a project applies to graduate, a TAG reads it properly, and that review is public. If you want to know whether a project is genuinely healthy, those reviews are better evidence than its star count.',
+        terms: [],
+        coins: [{ short: 'TAG', long: 'Technical Advisory Group', gloss: 'An open working group with domain expertise that advises the TOC, reviews projects and publishes guidance. Five currently exist.' }],
+      },
+      {
+        id: 'maturity', title: 'Sandbox, Incubating, Graduated',
+        one: 'Three levels that tell you how much of someone else\'s judgement you are borrowing.',
+        para: 'Sandbox is early: the CNCF is giving a project a neutral home and some infrastructure, not endorsing it. Incubating means real adopters and a functioning contributor base. Graduated means it has been through full due diligence, has a security audit, documented governance, and enough independent maintainers that no single company can steer it. Archived means it stopped, and that is a normal outcome rather than a failure.',
+        deep: 'Read the level as a statement about risk, not quality. Plenty of excellent software sits in Sandbox, and the level is telling you how much scrutiny has happened so far, not how good the code is. What it should change is the questions you ask. For a Graduated project, someone has already checked the governance and the bus factor for you. For a Sandbox project, that job is yours, and the honest move is to check whether more than one company pays the maintainers before you build on it.',
+        terms: [],
+        coins: [],
+      },
+      {
+        id: 'graduating', title: 'How a project actually graduates',
+        one: 'A public application, a due diligence review, and a vote. It takes months.',
+        para: 'A project applies, and the application is an issue anyone can read. It has to show adopters using it in production, documented governance covering how maintainers are added and removed, vendor neutrality of project direction, a completed security audit, and a Due Diligence Review that a TAG works through in public. Then the TOC votes. Graduated projects also now commit to an annual governance health check, because governance decays quietly after the vote.',
+        deep: 'The part worth borrowing even if you never apply: the requirement to document a complete maintainer lifecycle, and then demonstrate you have used it. Not "we have a governance file", but "maintainers have actually been added and removed by this process". That distinction catches a specific failure mode, the project with a beautiful written ladder that nobody has climbed in five years. It is a good question to ask of any dependency, CNCF or not.',
+        terms: [],
+        coins: [],
+      },
+      {
+        id: 'contributor-ladder', title: 'How you get commit rights',
+        one: 'Contributor, reviewer, approver, maintainer. The rungs have different names per project and the shape is the same.',
+        para: 'You start by sending changes. After enough of them, someone proposes you as a reviewer, which usually means your review counts formally even though you cannot merge. Approver or committer comes next, then maintainer, which carries a vote on direction. Kubernetes writes this down in OWNERS files. Other projects use a MAINTAINERS.md or a community repo. The path is documented far more often than people assume.',
+        deep: 'The advice nobody gives: reviewing other people\'s pull requests is a faster and far less crowded route than writing code. Every project has more code arriving than attention to review it, and someone who consistently triages issues and leaves useful review comments becomes visible quickly, because they are solving the maintainers\' actual bottleneck. Writing a feature makes more work for a maintainer before it makes less. Reviewing does the opposite from day one.',
+        terms: [],
+        coins: [],
+      },
+      {
+        id: 'community-events', title: 'Code of Conduct, events and certifications',
+        one: 'The parts that decide whether the community is somewhere you want to spend time.',
+        para: 'The CNCF Code of Conduct applies across projects, events and channels, and it is enforced rather than decorative. KubeCon and CloudNativeCon are the big conferences; Kubernetes Community Days are the smaller regional ones, run by local organisers, and they are usually the better first talk. There are certifications too, from KCNA at the entry level through the performance-based CKA, CKAD and CKS.',
+        deep: 'If you are anywhere outside the usual conference cities, the local event is the higher-leverage one. I helped bring a KCD to Gujarat and organise Grafana & Friends in Ahmedabad, and the pattern is consistent: the room is full of people who cannot easily fly to a KubeCon, the bar to speak is lower, and the connections are more durable because you will see the same people next quarter. Start there. The certifications are covered properly in the roadmaps further down, including the ones I would tell you to skip.',
+        terms: [],
+        coins: [],
+      },
+    ],
+  },
+
 ];
 
-/* Parts 4 to 6 are structured but not yet written, so the nav and the build can
-   already reason about the whole shape. Writing them is v1.1. */
+/* What is left. Parts 0 to 5 are written; the map is the remaining piece. */
 export const PLANNED = [
-  { id: 'layers', num: 4, title: 'The layers above', blurb: 'Networking, storage, observability, delivery, security, platform. Roughly 24 projects named in the context where you would actually reach for them.' },
-  { id: 'governance', num: 5, title: 'Governance and people', blurb: 'Board, TOC and staff; TAGs; the maturity ladder; how a project joins and graduates; the contributor ladder; Code of Conduct; events; certifications.' },
-  { id: 'reference', num: 6, title: 'Reference', blurb: 'Searchable glossary, the landscape map, and an acronym index.' },
+  { id: 'map', num: 6, title: 'The landscape map', blurb: 'An interactive view of the categories and where projects sit in them. The glossary and the acronym index below are already here; the map is the piece still to build.' },
 ];

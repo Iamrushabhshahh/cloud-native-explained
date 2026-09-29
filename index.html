@@ -1991,8 +1991,12 @@ summary:focus-visible,[tabindex]:focus-visible{
 #nav{position:sticky;top:0;z-index:50;
   background:color-mix(in srgb,var(--bg-color) 88%,transparent);
   backdrop-filter:blur(12px);border-bottom:1px solid var(--border-color)}
+#nav{display:flex;align-items:center;gap:8px;padding-right:14px}
 .navin{max-width:1080px;margin:0 auto;display:flex;align-items:center;gap:4px;padding:10px 20px;
-  overflow-x:auto;scrollbar-width:none}
+  overflow-x:auto;scrollbar-width:none;flex:1 1 auto;min-width:0;
+  /* fades at the edges so it is visible that the strip scrolls */
+  -webkit-mask-image:linear-gradient(to right,transparent,#000 18px,#000 calc(100% - 18px),transparent);
+  mask-image:linear-gradient(to right,transparent,#000 18px,#000 calc(100% - 18px),transparent)}
 .navin::-webkit-scrollbar{display:none}
 .brand{font-family:'Fira Code','Fira-Code-fallback',monospace;font-weight:700;font-size:13px;
   color:var(--fg-strong);margin-right:14px;white-space:nowrap;flex:0 0 auto;letter-spacing:-.02em}
@@ -2003,7 +2007,7 @@ summary:focus-visible,[tabindex]:focus-visible{
 .navin a::before{content:'./';opacity:.5}
 .navin a:hover{color:var(--fg-strong);background:var(--terminal-header)}
 .navin a.cur{color:var(--primary-color);border-color:var(--border-color);background:var(--panel-color)}
-#theme{margin-left:auto;flex:0 0 auto;background:none;border:1px solid var(--border-color);
+#theme{flex:0 0 auto;background:none;border:1px solid var(--border-color);
   color:var(--muted-color);width:30px;height:30px;border-radius:50%;cursor:pointer;font-size:13px}
 #theme:hover{color:var(--fg-strong);border-color:var(--primary-color)}
 
@@ -2190,19 +2194,39 @@ summary:focus-visible,[tabindex]:focus-visible{
 .gi{transition:border-color .15s}
 .gi[open]{border-color:var(--primary-color)}
 .gi[open] summary{color:var(--primary-color)}
+
+/* ---- acronym index ---- */
+.acrotable{border:1px solid var(--border-color);border-radius:8px;overflow:hidden;background:var(--panel-color)}
+.acro-hd,.acro{display:grid;grid-template-columns:100px 1fr 1fr;gap:16px;padding:12px 18px;align-items:baseline}
+.acro-hd{background:var(--terminal-header);font-family:'Fira Code','Fira-Code-fallback',monospace;
+  font-size:10px;letter-spacing:.11em;text-transform:uppercase;color:var(--muted-color);
+  border-bottom:1px solid var(--border-color)}
+.acro{border-bottom:1px solid var(--border-color);text-decoration:none;transition:background .15s}
+.acro:last-child{border-bottom:0}
+.acro:hover{background:var(--terminal-header)}
+.ac-s{font-family:'Fira Code','Fira-Code-fallback',monospace;font-weight:700;font-size:14px;color:var(--primary-color)}
+.ac-l{font-size:14px;color:var(--fg-strong)}
+.ac-w{font-family:'Fira Code','Fira-Code-fallback',monospace;font-size:11.5px;color:var(--muted-color)}
+@media (max-width:700px){
+  .acro-hd{display:none}
+  .acro{grid-template-columns:1fr;gap:3px;padding:14px 16px}
+}
 </style>
 </head>
 <body>
 <div id="prog"></div>
 <a href="#main" class="skip">Skip to content</a>
 
-<nav id="nav"><div class="navin">
-  <span class="brand">Cloud Native, Explained</span>
-  <a href="#orientation">0. Orientation</a><a href="#containers">1. The unit: containers</a><a href="#orchestration">2. Orchestration</a><a href="#interfaces">3. The interfaces</a>
-  <a href="#roles">Roles</a>
-  <a href="#glossary">Glossary</a>
+<nav id="nav">
+  <div class="navin">
+    <span class="brand">Cloud Native, Explained</span>
+    <a href="#orientation" title="Orientation">0. Orientation</a><a href="#containers" title="The unit: containers">1. Containers</a><a href="#orchestration" title="Orchestration">2. Orchestration</a><a href="#interfaces" title="The interfaces">3. Interfaces</a><a href="#layers" title="The layers above">4. Layers</a><a href="#governance" title="Governance and people">5. Governance</a>
+    <a href="#roles">Roles</a>
+    <a href="#acronyms">Acronyms</a>
+    <a href="#glossary">Glossary</a>
+  </div>
   <button id="theme" type="button" aria-label="Switch theme">◐</button>
-</div></nav>
+</nav>
 
 <main id="main" class="wrap">
   <header class="mast">
@@ -2210,8 +2234,8 @@ summary:focus-visible,[tabindex]:focus-visible{
     <h1>The landscape is a hierarchy pretending to be a wall.</h1>
     <p class="dek">A guided route through cloud native for anyone who opened <span class="nb">landscape.cncf.io</span>, saw a thousand logos and closed the tab. Every acronym is <b>earned before it is used</b>, defined where it appears, and hover-definable everywhere after.</p>
     <div class="facts">
-      <span class="fact"><b>18</b> concepts</span>
-      <span class="fact"><b>7</b> acronyms, each introduced in order</span>
+      <span class="fact"><b>30</b> concepts</span>
+      <span class="fact"><b>12</b> acronyms, each introduced in order</span>
       <span class="fact"><b>84</b> glossary terms</span>
       <span class="fact"><b>12</b> role roadmaps</span>
       <span class="fact"><b>51</b> also in Hindi</span>
@@ -2457,6 +2481,159 @@ summary:focus-visible,[tabindex]:focus-visible{
   </div>
 </article>
 </section>
+<section class="part" id="layers">
+  <header class="ph">
+    <span class="pn">Part 4</span>
+    <h2>The layers above</h2>
+    <p class="pb">Six jobs that sit on top of the interfaces, and the projects you would actually reach for in each. Named in context, not as a list to memorise.</p>
+  </header>
+  
+<article class="cx" id="networking-mesh" style="--i:0">
+  <div class="cx-n">01</div>
+  <div class="cx-b">
+    <h3>Networking and service mesh</h3>
+    <p class="one">Getting packets between pods is solved. Deciding what should be allowed, retried or encrypted is not.</p>
+    <p class="para">Your CNI plugin already gives every pod an address and a route. A mesh is what you add when that is not enough: mutual TLS between services so traffic is encrypted and identified, retries and timeouts applied consistently instead of reimplemented in six languages, and traffic splitting so you can send 5% of requests to a new version. Istio and Linkerd do this with a sidecar proxy next to each pod. Cilium does much of it in the kernel with eBPF and no sidecar.</p>
+    <div class="coins">
+      <div class="coin"><span class="cs">mTLS</span><span class="cl">mutual TLS</span><p>Both sides of a connection present a certificate, so services prove who they are to each other rather than only the server proving it to the client.</p></div></div>
+    <details class="deep"><summary>Go deeper</summary><p>The honest version: a mesh is a lot of machinery, and plenty of teams adopt one before they have the problem it solves. The question worth asking is whether you currently have retry logic, timeout logic and TLS handling copy-pasted across services in different languages, drifting apart. If yes, a mesh pays for itself. If you have four services and one language, it is a second control plane to operate for benefits you could get from a shared library. Start with Gateway API for ingress and add a mesh when the pain is real.</p></details>
+    <p class="tref"><span>Terms here</span><button class="j" type="button" data-k="service-mesh" aria-describedby="tipbox">Service Mesh</button><button class="j" type="button" data-k="service-proxy" aria-describedby="tipbox">Service Proxy</button><button class="j" type="button" data-k="sidecar-container" aria-describedby="tipbox">Sidecar Container</button></p>
+  </div>
+</article>
+<article class="cx" id="storage-layer" style="--i:1">
+  <div class="cx-n">02</div>
+  <div class="cx-b">
+    <h3>Storage</h3>
+    <p class="one">Somebody has to decide what happens to your data when the pod holding it is rescheduled.</p>
+    <p class="para">Above CSI sit the systems that actually hold bytes. Rook runs Ceph inside your cluster. Longhorn gives you replicated block storage from the disks already in your nodes. OpenEBS does container-attached storage. MinIO serves an S3-compatible object API. Each solves a different shape of problem, and the shape matters more than the feature list.</p>
+    
+    <details class="deep"><summary>Go deeper</summary><p>Two questions decide most of this, and almost nobody asks them in order. First: does this data need to survive the cluster, or only the pod? Those are very different requirements, and the second is much cheaper. Second: are you running on a cloud that already has good managed storage? If you are, running your own distributed storage inside Kubernetes is a large operational commitment you are choosing rather than being forced into. Storage is the one layer where &quot;boring and managed&quot; is usually the correct engineering answer.</p></details>
+    <p class="tref"><span>Terms here</span><button class="j" type="button" data-k="stateful-apps" aria-describedby="tipbox">Stateful Apps</button></p>
+  </div>
+</article>
+<article class="cx" id="observability-layer" style="--i:2">
+  <div class="cx-n">03</div>
+  <div class="cx-b">
+    <h3>Observability</h3>
+    <p class="one">Not three pillars. One question: can you find out what is happening without shipping new code?</p>
+    <p class="para">Prometheus scrapes and stores metrics and gives you PromQL to ask questions of them. OpenTelemetry is the vendor-neutral way to produce traces, metrics and logs so you are not locked into whoever you picked first. Grafana draws it. Loki holds logs, Tempo holds traces, Jaeger traces too, Fluentd and Fluent Bit move logs around. Cortex, Thanos and Mimir exist because a single Prometheus eventually is not enough.</p>
+    <div class="coins">
+      <div class="coin"><span class="cs">SLO</span><span class="cl">service level objective</span><p>A target for how reliable something should be, stated as a number, so &quot;is this acceptable&quot; has an answer instead of an argument.</p></div></div>
+    <details class="deep"><summary>Go deeper</summary><p>The &quot;three pillars&quot; framing is popular and slightly misleading, because it makes you feel done once you have all three. You are not done when you have metrics, logs and traces. You are done when someone paged at 2am can answer &quot;what changed and what is it touching&quot; in a few minutes. I have written up <a href="/blog/dns-storm-eai-again/">an incident where every dashboard was green and the cause was DNS</a>, a resource nobody had a graph for. The gap is almost never a missing pillar. It is a missing question nobody thought to ask in advance.</p></details>
+    <p class="tref"><span>Terms here</span><button class="j" type="button" data-k="observability" aria-describedby="tipbox">Observability</button></p>
+  </div>
+</article>
+<article class="cx" id="delivery-layer" style="--i:3">
+  <div class="cx-n">04</div>
+  <div class="cx-b">
+    <h3>Delivery and GitOps</h3>
+    <p class="one">Git holds the desired state. A controller in the cluster makes reality match it.</p>
+    <p class="para">This is the reconciliation loop again with Git as the source of truth. Argo CD and Flux both watch a repository and apply what they find, then keep applying it. Helm packages manifests into charts with values you can override. Kustomize layers patches over a base without templating. Argo Rollouts and Flagger do canary and blue-green releases with real signals deciding whether to continue.</p>
+    
+    <details class="deep"><summary>Go deeper</summary><p>The thing GitOps actually buys you is not automation. It is that your cluster stops being a place where state accumulates from forgotten kubectl commands. Every change has an author, a review and a revert. The cost is real too: secrets get awkward, and the day a controller is syncing something you urgently need to change by hand, you will feel it. Sealed Secrets and External Secrets Operator exist because this problem is universal, and neither is free of trade-offs.</p></details>
+    <p class="tref"><span>Terms here</span><button class="j" type="button" data-k="gitops" aria-describedby="tipbox">GitOps</button><button class="j" type="button" data-k="continuous-delivery" aria-describedby="tipbox">Continuous Delivery (CD)</button></p>
+  </div>
+</article>
+<article class="cx" id="security-layer" style="--i:4">
+  <div class="cx-n">05</div>
+  <div class="cx-b">
+    <h3>Security and the supply chain</h3>
+    <p class="one">Two separate problems: what a running workload can reach, and whether you can prove what you are running.</p>
+    <p class="para">At runtime: OPA and Kyverno enforce policy at admission so a non-conforming workload never starts. Falco watches for suspicious behaviour once things are running. SPIFFE and SPIRE give workloads cryptographic identity, which is what <button class="j" type="button" data-k="mTLS" aria-describedby="tipbox">mTLS</button> needs underneath it. On the supply chain side: sigstore signs artefacts, in-toto attests to how they were built, and an SBOM records what is actually inside an image.</p>
+    <div class="coins">
+      <div class="coin"><span class="cs">SBOM</span><span class="cl">software bill of materials</span><p>A machine-readable inventory of everything inside an artefact, so you can answer &quot;do we ship this vulnerable library&quot; without guessing.</p></div></div>
+    <details class="deep"><summary>Go deeper</summary><p>Supply chain security got serious attention after a run of incidents where the compromise was upstream of everyone affected, and the honest summary is that most organisations are still at step one. Step one is not signing. Step one is knowing what you run: which images, built from what, pulled from where. An SBOM nobody reads is still more useful than not having one, because the day a CVE lands in a library you did not know you shipped, the difference between an afternoon and a fortnight is whether that inventory exists.</p></details>
+    <p class="tref"><span>Terms here</span><button class="j" type="button" data-k="zero-trust-architecture" aria-describedby="tipbox">Zero Trust Architecture</button><button class="j" type="button" data-k="policy-as-code" aria-describedby="tipbox">Policy as Code (PaC)</button><button class="j" type="button" data-k="shift-left" aria-describedby="tipbox">Shift Left</button></p>
+  </div>
+</article>
+<article class="cx" id="platform-layer" style="--i:5">
+  <div class="cx-n">06</div>
+  <div class="cx-b">
+    <h3>Platform and developer experience</h3>
+    <p class="one">The layer whose users are other engineers, and whose success is measured in how little they need to know.</p>
+    <p class="para">Backstage gives you a developer portal and a service catalogue. Crossplane lets you provision cloud infrastructure through the Kubernetes API using custom resources. Knative handles serverless workloads and scale-to-zero. KEDA scales on queue depth and other event sources rather than CPU. Together these are the pieces most internal platforms are assembled from.</p>
+    
+    <details class="deep"><summary>Go deeper</summary><p>Platform engineering goes wrong in a specific and predictable way: the platform team builds the abstraction they find interesting instead of the one their users are stuck on. The test I would apply is whether a new engineer can ship a service to production on day two without reading your documentation twice. If the answer is no, adding Backstage does not fix it. The paved road has to be genuinely easier than going around it, or people go around it, and then you have a platform and a shadow platform.</p></details>
+    <p class="tref"><span>Terms here</span><button class="j" type="button" data-k="platform-engineering" aria-describedby="tipbox">Platform Engineering</button><button class="j" type="button" data-k="auto-scaling" aria-describedby="tipbox">Autoscaling</button></p>
+  </div>
+</article>
+</section>
+<section class="part" id="governance">
+  <header class="ph">
+    <span class="pn">Part 5</span>
+    <h2>Governance and people</h2>
+    <p class="pb">Who decides what, how a project moves up, and how you get from reading this to having commit rights. The part almost no guide covers, and the part that decides whether a project is safe to depend on.</p>
+  </header>
+  
+<article class="cx" id="who-decides" style="--i:0">
+  <div class="cx-n">01</div>
+  <div class="cx-b">
+    <h3>Who actually decides things</h3>
+    <p class="one">Three bodies, three completely different jobs, and confusing them is the usual mistake.</p>
+    <p class="para">The Governing Board handles money, marketing and membership. It does not decide technical direction. The Technical Oversight Committee does: it accepts projects, moves them between maturity levels, and defines what cloud native means in practice. CNCF staff run the events, the infrastructure and the programmes. Members pay to fund it, and paying more does not buy technical control, which is the arrangement the whole thing depends on.</p>
+    <div class="coins">
+      <div class="coin"><span class="cs">TOC</span><span class="cl">Technical Oversight Committee</span><p>The elected body that accepts CNCF projects, promotes them between maturity levels and defines the technical scope. Separate from the Governing Board, which handles money.</p></div></div>
+    <details class="deep"><summary>Go deeper</summary><p>That separation is not bureaucratic decoration, it is the product. A company can put its infrastructure on a CNCF project because no amount of platinum membership lets a vendor overrule the TOC on technical direction. When you evaluate any open source foundation, this is the structure to look for first, and its absence is the thing that has bitten organisations before.</p></details>
+    
+  </div>
+</article>
+<article class="cx" id="tags" style="--i:1">
+  <div class="cx-n">02</div>
+  <div class="cx-b">
+    <h3>TAGs, and where the work actually happens</h3>
+    <p class="one">Working groups that do the technical legwork the TOC cannot do alone.</p>
+    <p class="para">Technical Advisory Groups are where domain expertise lives. As of now there are five: Developer Experience, Infrastructure, Operational Resilience, Security and Compliance, and Workloads Foundation. They review projects applying for incubation or graduation, publish guidance, and run working groups on specific problems. They are open, and turning up to a TAG call is one of the lowest-friction ways into the community that exists.</p>
+    <div class="coins">
+      <div class="coin"><span class="cs">TAG</span><span class="cl">Technical Advisory Group</span><p>An open working group with domain expertise that advises the TOC, reviews projects and publishes guidance. Five currently exist.</p></div></div>
+    <details class="deep"><summary>Go deeper</summary><p>Two things worth knowing. First, this structure has been reorganised before: there used to be more TAGs with narrower scopes, and they were consolidated. Any guide telling you the old list confidently is out of date, which is a decent reason to check cncf/toc rather than trust a blog post, including this one. Second, TAG review is a real gate. When a project applies to graduate, a TAG reads it properly, and that review is public. If you want to know whether a project is genuinely healthy, those reviews are better evidence than its star count.</p></details>
+    
+  </div>
+</article>
+<article class="cx" id="maturity" style="--i:2">
+  <div class="cx-n">03</div>
+  <div class="cx-b">
+    <h3>Sandbox, Incubating, Graduated</h3>
+    <p class="one">Three levels that tell you how much of someone else's judgement you are borrowing.</p>
+    <p class="para">Sandbox is early: the CNCF is giving a project a neutral home and some infrastructure, not endorsing it. Incubating means real adopters and a functioning contributor base. Graduated means it has been through full due diligence, has a security audit, documented governance, and enough independent maintainers that no single company can steer it. Archived means it stopped, and that is a normal outcome rather than a failure.</p>
+    
+    <details class="deep"><summary>Go deeper</summary><p>Read the level as a statement about risk, not quality. Plenty of excellent software sits in Sandbox, and the level is telling you how much scrutiny has happened so far, not how good the code is. What it should change is the questions you ask. For a Graduated project, someone has already checked the governance and the bus factor for you. For a Sandbox project, that job is yours, and the honest move is to check whether more than one company pays the maintainers before you build on it.</p></details>
+    
+  </div>
+</article>
+<article class="cx" id="graduating" style="--i:3">
+  <div class="cx-n">04</div>
+  <div class="cx-b">
+    <h3>How a project actually graduates</h3>
+    <p class="one">A public application, a due diligence review, and a vote. It takes months.</p>
+    <p class="para">A project applies, and the application is an issue anyone can read. It has to show adopters using it in production, documented governance covering how maintainers are added and removed, vendor neutrality of project direction, a completed security audit, and a Due Diligence Review that a TAG works through in public. Then the TOC votes. Graduated projects also now commit to an annual governance health check, because governance decays quietly after the vote.</p>
+    
+    <details class="deep"><summary>Go deeper</summary><p>The part worth borrowing even if you never apply: the requirement to document a complete maintainer lifecycle, and then demonstrate you have used it. Not &quot;we have a governance file&quot;, but &quot;maintainers have actually been added and removed by this process&quot;. That distinction catches a specific failure mode, the project with a beautiful written ladder that nobody has climbed in five years. It is a good question to ask of any dependency, CNCF or not.</p></details>
+    
+  </div>
+</article>
+<article class="cx" id="contributor-ladder" style="--i:4">
+  <div class="cx-n">05</div>
+  <div class="cx-b">
+    <h3>How you get commit rights</h3>
+    <p class="one">Contributor, reviewer, approver, maintainer. The rungs have different names per project and the shape is the same.</p>
+    <p class="para">You start by sending changes. After enough of them, someone proposes you as a reviewer, which usually means your review counts formally even though you cannot merge. Approver or committer comes next, then maintainer, which carries a vote on direction. Kubernetes writes this down in OWNERS files. Other projects use a MAINTAINERS.md or a community repo. The path is documented far more often than people assume.</p>
+    
+    <details class="deep"><summary>Go deeper</summary><p>The advice nobody gives: reviewing other people's pull requests is a faster and far less crowded route than writing code. Every project has more code arriving than attention to review it, and someone who consistently triages issues and leaves useful review comments becomes visible quickly, because they are solving the maintainers' actual bottleneck. Writing a feature makes more work for a maintainer before it makes less. Reviewing does the opposite from day one.</p></details>
+    
+  </div>
+</article>
+<article class="cx" id="community-events" style="--i:5">
+  <div class="cx-n">06</div>
+  <div class="cx-b">
+    <h3>Code of Conduct, events and certifications</h3>
+    <p class="one">The parts that decide whether the community is somewhere you want to spend time.</p>
+    <p class="para">The CNCF Code of Conduct applies across projects, events and channels, and it is enforced rather than decorative. KubeCon and CloudNativeCon are the big conferences; Kubernetes Community Days are the smaller regional ones, run by local organisers, and they are usually the better first talk. There are certifications too, from KCNA at the entry level through the performance-based CKA, CKAD and CKS.</p>
+    
+    <details class="deep"><summary>Go deeper</summary><p>If you are anywhere outside the usual conference cities, the local event is the higher-leverage one. I helped bring a KCD to Gujarat and organise Grafana &amp; Friends in Ahmedabad, and the pattern is consistent: the room is full of people who cannot easily fly to a KubeCon, the bar to speak is lower, and the connections are more durable because you will see the same people next quarter. Start there. The certifications are covered properly in the roadmaps further down, including the ones I would tell you to skip.</p></details>
+    
+  </div>
+</article>
+</section>
 
   <section class="part" id="roles">
     <header class="ph"><span class="pn">Roles</span><h2>Where each path actually ends</h2>
@@ -2676,7 +2853,64 @@ summary:focus-visible,[tabindex]:focus-visible{
   <section class="part planned" id="planned">
     <header class="ph"><span class="pn">Next</span><h2>Still being written</h2>
     <p class="pb">The path continues. These are structured but not yet written, so the shape is honest about what exists today.</p></header>
-    <div class="pl"><span class="pn2">Part 4</span><h3>The layers above</h3><p>Networking, storage, observability, delivery, security, platform. Roughly 24 projects named in the context where you would actually reach for them.</p></div><div class="pl"><span class="pn2">Part 5</span><h3>Governance and people</h3><p>Board, TOC and staff; TAGs; the maturity ladder; how a project joins and graduates; the contributor ladder; Code of Conduct; events; certifications.</p></div><div class="pl"><span class="pn2">Part 6</span><h3>Reference</h3><p>Searchable glossary, the landscape map, and an acronym index.</p></div>
+    <div class="pl"><span class="pn2">Part 6</span><h3>The landscape map</h3><p>An interactive view of the categories and where projects sit in them. The glossary and the acronym index below are already here; the map is the piece still to build.</p></div>
+  </section>
+
+  <section class="part" id="acronyms">
+    <header class="ph"><span class="pn">Reference</span><h2>Every acronym, in the order the guide introduces it</h2>
+    <p class="pb">The build refuses to compile if any of these appears in the prose before the concept that introduces it, so this table is also the reading order. If you landed here from a search, the third column is the section that explains it properly.</p></header>
+    <div class="acrotable">
+      <div class="acro-hd"><span>Acronym</span><span>Stands for</span><span>Introduced in</span></div>
+      <a class="acro" href="#what-is-cncf">
+          <span class="ac-s">CNCF</span>
+          <span class="ac-l">Cloud Native Computing Foundation</span>
+          <span class="ac-w">Part 0 &middot; What the CNCF is, and what it is not</span>
+        </a><a class="acro" href="#oci">
+          <span class="ac-s">OCI</span>
+          <span class="ac-l">Open Container Initiative</span>
+          <span class="ac-w">Part 1 &middot; OCI: the specifications underneath</span>
+        </a><a class="acro" href="#runtimes">
+          <span class="ac-s">CRI</span>
+          <span class="ac-l">Container Runtime Interface</span>
+          <span class="ac-w">Part 1 &middot; Runtimes: high-level, low-level, sandboxed</span>
+        </a><a class="acro" href="#crd-operators">
+          <span class="ac-s">CRD</span>
+          <span class="ac-l">Custom Resource Definition</span>
+          <span class="ac-w">Part 2 &middot; CRDs and operators</span>
+        </a><a class="acro" href="#cni">
+          <span class="ac-s">CNI</span>
+          <span class="ac-l">Container Network Interface</span>
+          <span class="ac-w">Part 3 &middot; CNI, the Container Network Interface</span>
+        </a><a class="acro" href="#csi">
+          <span class="ac-s">CSI</span>
+          <span class="ac-l">Container Storage Interface</span>
+          <span class="ac-w">Part 3 &middot; CSI, the Container Storage Interface</span>
+        </a><a class="acro" href="#ccm-gateway">
+          <span class="ac-s">CCM</span>
+          <span class="ac-l">Cloud Controller Manager</span>
+          <span class="ac-w">Part 3 &middot; CCM and Gateway API, the other two boundaries</span>
+        </a><a class="acro" href="#networking-mesh">
+          <span class="ac-s">mTLS</span>
+          <span class="ac-l">mutual TLS</span>
+          <span class="ac-w">Part 4 &middot; Networking and service mesh</span>
+        </a><a class="acro" href="#observability-layer">
+          <span class="ac-s">SLO</span>
+          <span class="ac-l">service level objective</span>
+          <span class="ac-w">Part 4 &middot; Observability</span>
+        </a><a class="acro" href="#security-layer">
+          <span class="ac-s">SBOM</span>
+          <span class="ac-l">software bill of materials</span>
+          <span class="ac-w">Part 4 &middot; Security and the supply chain</span>
+        </a><a class="acro" href="#who-decides">
+          <span class="ac-s">TOC</span>
+          <span class="ac-l">Technical Oversight Committee</span>
+          <span class="ac-w">Part 5 &middot; Who actually decides things</span>
+        </a><a class="acro" href="#tags">
+          <span class="ac-s">TAG</span>
+          <span class="ac-l">Technical Advisory Group</span>
+          <span class="ac-w">Part 5 &middot; TAGs, and where the work actually happens</span>
+        </a>
+    </div>
   </section>
 
   <section class="part" id="glossary">
@@ -3114,7 +3348,7 @@ summary:focus-visible,[tabindex]:focus-visible{
   <p>Built on <a href="https://github.com/cncf/glossary">cncf/glossary</a> and <a href="https://github.com/cncf/landscape">cncf/landscape</a>, both Apache-2.0. Corrections found while writing go back upstream.</p>
   <p class="cocn">Follows the <a href="https://github.com/cncf/foundation/blob/main/code-of-conduct.md">CNCF Code of Conduct</a>. Every project here is described on its merits.</p>
 </footer>
-<script>window.__VOCAB__={"CNCF":{"title":"CNCF — Cloud Native Computing Foundation","gloss":"Part of the Linux Foundation. Hosts cloud native projects and holds their trademarks, but does not write their code.","upstream":null},"OCI":{"title":"OCI — Open Container Initiative","gloss":"Publishes the image, runtime and distribution specifications that make containers portable between vendors.","upstream":null},"CRI":{"title":"CRI — Container Runtime Interface","gloss":"The API Kubernetes uses to talk to a container runtime. CRI-O is named after it. Covered properly in Part 3.","upstream":null},"CRD":{"title":"CRD — Custom Resource Definition","gloss":"Adds a new resource type to the Kubernetes API so the cluster can manage objects it was not built to understand.","upstream":null},"CNI":{"title":"CNI — Container Network Interface","gloss":"The contract a networking plugin implements to give each pod an IP address and connectivity. Calico, Cilium and Flannel are implementations.","upstream":null},"CSI":{"title":"CSI — Container Storage Interface","gloss":"The contract a storage system implements so Kubernetes can provision, attach and mount volumes without vendor code in its core.","upstream":null},"CCM":{"title":"CCM — Cloud Controller Manager","gloss":"Holds the cloud-provider-specific logic (load balancers, node metadata) so the Kubernetes core stays provider-neutral.","upstream":null},"cloud-native-apps":{"title":"Cloud Native Apps","gloss":"Cloud native applications are specifically designed to take advantage of innovations in cloud computing. These applications integrate easily with their respective cloud architectures, taking advantage of the cloud’s resources and scaling capabilities. It also ","upstream":"https://glossary.cncf.io/cloud-native-apps/","hi":null},"cloud-native-tech":{"title":"Cloud Native Technology","gloss":"Cloud native technologies, also referred to as the cloud native stack, are the technologies used to build cloud native applications. These technologies enable organizations to build and run scalable applications in modern and dynamic environments such as publi","upstream":"https://glossary.cncf.io/cloud-native-tech/","hi":"क्लाउड नेटिव प्रौद्योगिकी (Cloud Native Tech)"},"distributed-apps":{"title":"Distributed Apps","gloss":"A distributed application is an application where the functionality is broken down into multiple smaller independent parts. Distributed applications are usually composed of individual microservices that handle different concerns within the broader application.","upstream":"https://glossary.cncf.io/distributed-apps/","hi":"वितरित ऐप्स (Distributed Apps)"},"virtual-machine":{"title":"Virtual Machine","gloss":"A virtual machine (VM) is a computer and its operating system that is not bound to a particular piece of hardware. VMs rely on virtualization to carve a single physical computer into multiple virtual computers. That separation allows organizations and infrastr","upstream":"https://glossary.cncf.io/virtual-machine/","hi":"वर्चुअल मशीन (Virtual Machine)"},"virtualization":{"title":"Virtualization","gloss":"Virtualization, in the context of cloud native computing, refers to the process of taking a physical computer, sometimes called a server, and allowing it to run multiple isolated operating systems. Those isolated operating systems and their dedicated compute r","upstream":"https://glossary.cncf.io/virtualization/","hi":"वर्चुअलाइजेशन (Virtualization)"},"bare-metal-machine":{"title":"Bare Metal Machine","gloss":"Bare metal refers to a physical computer, specifically a server, that has one and only one operating system. The distinction is important in modern computing because many, if not most, servers are virtual machines. A physical server is typically a fairly large","upstream":"https://glossary.cncf.io/bare-metal-machine/","hi":"बेयर मेटल मशीन (Bare Metal Machine)"},"container-image":{"title":"Container Image","gloss":"A container image is an immutable, static file containing the dependencies for the creation of a container. These dependencies may include a single executable binary file, system libraries, system tools, environment variables, and other required platform setti","upstream":"https://glossary.cncf.io/container-image/","hi":"कंटेनर इमेज (Container Image)"},"container":{"title":"Containers","gloss":"A container is a running process with resource and capability constraints managed by a computer’s operating system. The files available to the container process are packaged as a container image. Containers run adjacent to each other on the same machine, but t","upstream":"https://glossary.cncf.io/container/","hi":"कंटेनर (Container)"},"immutable-infrastructure":{"title":"Immutable Infrastructure","gloss":"Immutable Infrastructure refers to computer infrastructure (virtual machines, containers, network appliances) that cannot be changed once deployed. This can be enforced by an automated process that overwrites unauthorized changes or through a system that won't","upstream":"https://glossary.cncf.io/immutable-infrastructure/","hi":null},"runtime":{"title":"Runtime","gloss":"A runtime, in general, executes a piece of software. It is an abstraction of the underlying operating system that translates the program's commands into respective actions for the operating system. In the context of cloud native, runtime generally refers to co","upstream":"https://glossary.cncf.io/runtime/","hi":null},"container-orchestration":{"title":"Container Orchestration","gloss":"Container orchestration refers to managing and automating the lifecycle of containerized applications in dynamic environments. It's executed through a container orchestrator (in most cases, Kubernetes), which enables deployments, (auto)scaling, auto-healing, a","upstream":"https://glossary.cncf.io/container-orchestration/","hi":"कंटेनर ऑर्केस्ट्रेशन (Container Orchestration)"},"cluster":{"title":"Cluster","gloss":"A cluster is a group of computers or applications called nodes that work together towards a common goal. In cloud native computing, the term is often applied when talking about a Kubernetes cluster. It can be seen as a specific kind of distributed system where","upstream":"https://glossary.cncf.io/cluster/","hi":"क्लस्टर (Cluster)"},"scalability":{"title":"Scalability","gloss":"Scalability refers to how well a system can grow. That is increasing the ability to do whatever the system is supposed to do. For example, a Kubernetes cluster scales by increasing or reducing the number of containerized apps, but that scalability depends on s","upstream":"https://glossary.cncf.io/scalability/","hi":"मापनीयता (Scalability)"},"nodes":{"title":"Nodes","gloss":"A node is a computer that works in concert with other computers, or nodes, to accomplish a common task. Take your laptop, modem, and printer, for example. They are all connected over your wifi network communicating and collaborating, each representing one node","upstream":"https://glossary.cncf.io/nodes/","hi":"नोड्स (Nodes)"},"kubernetes":{"title":"Kubernetes","gloss":"Kubernetes, often abbreviated as K8s, is an open source container orchestrator. It automates the lifecycle of containerized applications on modern infrastructures, functioning as a \"datacenter operating system\" that manages applications across a distributed sy","upstream":"https://glossary.cncf.io/kubernetes/","hi":"कुबेरनेट्स (Kubernetes)"},"idempotence":{"title":"Idempotence","gloss":"In maths or computer science, idempotence describes an operation that always leads to the same outcome, no matter how many times you execute it. If the parameters are the same, executing an idempotent operation several times will have no additional effect.","upstream":"https://glossary.cncf.io/idempotence/","hi":"इडेमपोटेन्स (Idempotence)"},"pod":{"title":"Pod","gloss":"Within a Kubernetes environment, a pod acts as the most basic deployable unit. It represents an essential building block for deploying and managing containerized applications. Each pod contains a single application instance and can hold one or more containers.","upstream":"https://glossary.cncf.io/pod/","hi":null},"service":{"title":"Service","gloss":"Please note that in IT, service has multiple meanings. In this definition, we'll focus on the more traditional one: service as in microservice. How or even if services differ from microservices is nuanced and different people may have different opinions. For a","upstream":"https://glossary.cncf.io/service/","hi":"सेवा(Service)"},"abstraction":{"title":"Abstraction","gloss":"In the context of computing, an abstraction is a representation that hides specifics from a consumer of services (a consumer being a computer program or human), making a system more generic and thus easily understood. A good example is your laptop's operating ","upstream":"https://glossary.cncf.io/abstraction/","hi":"ऐब्स्ट्रैक्शन (Abstraction)"},"application-programming-interface":{"title":"Application Programming Interface (API)","gloss":"An API is a way for computer programs to interact with each other. Just as humans interact with a website via a web page, an API allows computer programs to interact with each other. Unlike human interactions, APIs have limitations on what can and cannot be as","upstream":"https://glossary.cncf.io/application-programming-interface/","hi":"एप्लीकेशन प्रोग्रामिंग इंटरफ़ेस (Application Programming Interface)"},"stateful-apps":{"title":"Stateful Apps","gloss":"When we speak of stateful (and stateless) apps, state refers to any data the app needs to store to function as designed. Any kind of online shop that remembers your cart is a stateful app for example. Today, most applications we use are at least partly statefu","upstream":"https://glossary.cncf.io/stateful-apps/","hi":null},"service-mesh":{"title":"Service Mesh","gloss":"In a microservices world, apps are broken down into multiple smaller services that communicate over a network. Just like your wifi network, computer networks are intrinsically unreliable, hackable, and often slow. Service meshes address this new set of challen","upstream":"https://glossary.cncf.io/service-mesh/","hi":"सर्विस मेश (Service Mesh)"}};</script>
+<script>window.__VOCAB__={"CNCF":{"title":"CNCF — Cloud Native Computing Foundation","gloss":"Part of the Linux Foundation. Hosts cloud native projects and holds their trademarks, but does not write their code.","upstream":null},"OCI":{"title":"OCI — Open Container Initiative","gloss":"Publishes the image, runtime and distribution specifications that make containers portable between vendors.","upstream":null},"CRI":{"title":"CRI — Container Runtime Interface","gloss":"The API Kubernetes uses to talk to a container runtime. CRI-O is named after it. Covered properly in Part 3.","upstream":null},"CRD":{"title":"CRD — Custom Resource Definition","gloss":"Adds a new resource type to the Kubernetes API so the cluster can manage objects it was not built to understand.","upstream":null},"CNI":{"title":"CNI — Container Network Interface","gloss":"The contract a networking plugin implements to give each pod an IP address and connectivity. Calico, Cilium and Flannel are implementations.","upstream":null},"CSI":{"title":"CSI — Container Storage Interface","gloss":"The contract a storage system implements so Kubernetes can provision, attach and mount volumes without vendor code in its core.","upstream":null},"CCM":{"title":"CCM — Cloud Controller Manager","gloss":"Holds the cloud-provider-specific logic (load balancers, node metadata) so the Kubernetes core stays provider-neutral.","upstream":null},"mTLS":{"title":"mTLS — mutual TLS","gloss":"Both sides of a connection present a certificate, so services prove who they are to each other rather than only the server proving it to the client.","upstream":null},"SLO":{"title":"SLO — service level objective","gloss":"A target for how reliable something should be, stated as a number, so \"is this acceptable\" has an answer instead of an argument.","upstream":null},"SBOM":{"title":"SBOM — software bill of materials","gloss":"A machine-readable inventory of everything inside an artefact, so you can answer \"do we ship this vulnerable library\" without guessing.","upstream":null},"TOC":{"title":"TOC — Technical Oversight Committee","gloss":"The elected body that accepts CNCF projects, promotes them between maturity levels and defines the technical scope. Separate from the Governing Board, which handles money.","upstream":null},"TAG":{"title":"TAG — Technical Advisory Group","gloss":"An open working group with domain expertise that advises the TOC, reviews projects and publishes guidance. Five currently exist.","upstream":null},"cloud-native-apps":{"title":"Cloud Native Apps","gloss":"Cloud native applications are specifically designed to take advantage of innovations in cloud computing. These applications integrate easily with their respective cloud architectures, taking advantage of the cloud’s resources and scaling capabilities. It also ","upstream":"https://glossary.cncf.io/cloud-native-apps/","hi":null},"cloud-native-tech":{"title":"Cloud Native Technology","gloss":"Cloud native technologies, also referred to as the cloud native stack, are the technologies used to build cloud native applications. These technologies enable organizations to build and run scalable applications in modern and dynamic environments such as publi","upstream":"https://glossary.cncf.io/cloud-native-tech/","hi":"क्लाउड नेटिव प्रौद्योगिकी (Cloud Native Tech)"},"distributed-apps":{"title":"Distributed Apps","gloss":"A distributed application is an application where the functionality is broken down into multiple smaller independent parts. Distributed applications are usually composed of individual microservices that handle different concerns within the broader application.","upstream":"https://glossary.cncf.io/distributed-apps/","hi":"वितरित ऐप्स (Distributed Apps)"},"virtual-machine":{"title":"Virtual Machine","gloss":"A virtual machine (VM) is a computer and its operating system that is not bound to a particular piece of hardware. VMs rely on virtualization to carve a single physical computer into multiple virtual computers. That separation allows organizations and infrastr","upstream":"https://glossary.cncf.io/virtual-machine/","hi":"वर्चुअल मशीन (Virtual Machine)"},"virtualization":{"title":"Virtualization","gloss":"Virtualization, in the context of cloud native computing, refers to the process of taking a physical computer, sometimes called a server, and allowing it to run multiple isolated operating systems. Those isolated operating systems and their dedicated compute r","upstream":"https://glossary.cncf.io/virtualization/","hi":"वर्चुअलाइजेशन (Virtualization)"},"bare-metal-machine":{"title":"Bare Metal Machine","gloss":"Bare metal refers to a physical computer, specifically a server, that has one and only one operating system. The distinction is important in modern computing because many, if not most, servers are virtual machines. A physical server is typically a fairly large","upstream":"https://glossary.cncf.io/bare-metal-machine/","hi":"बेयर मेटल मशीन (Bare Metal Machine)"},"container-image":{"title":"Container Image","gloss":"A container image is an immutable, static file containing the dependencies for the creation of a container. These dependencies may include a single executable binary file, system libraries, system tools, environment variables, and other required platform setti","upstream":"https://glossary.cncf.io/container-image/","hi":"कंटेनर इमेज (Container Image)"},"container":{"title":"Containers","gloss":"A container is a running process with resource and capability constraints managed by a computer’s operating system. The files available to the container process are packaged as a container image. Containers run adjacent to each other on the same machine, but t","upstream":"https://glossary.cncf.io/container/","hi":"कंटेनर (Container)"},"immutable-infrastructure":{"title":"Immutable Infrastructure","gloss":"Immutable Infrastructure refers to computer infrastructure (virtual machines, containers, network appliances) that cannot be changed once deployed. This can be enforced by an automated process that overwrites unauthorized changes or through a system that won't","upstream":"https://glossary.cncf.io/immutable-infrastructure/","hi":null},"runtime":{"title":"Runtime","gloss":"A runtime, in general, executes a piece of software. It is an abstraction of the underlying operating system that translates the program's commands into respective actions for the operating system. In the context of cloud native, runtime generally refers to co","upstream":"https://glossary.cncf.io/runtime/","hi":null},"container-orchestration":{"title":"Container Orchestration","gloss":"Container orchestration refers to managing and automating the lifecycle of containerized applications in dynamic environments. It's executed through a container orchestrator (in most cases, Kubernetes), which enables deployments, (auto)scaling, auto-healing, a","upstream":"https://glossary.cncf.io/container-orchestration/","hi":"कंटेनर ऑर्केस्ट्रेशन (Container Orchestration)"},"cluster":{"title":"Cluster","gloss":"A cluster is a group of computers or applications called nodes that work together towards a common goal. In cloud native computing, the term is often applied when talking about a Kubernetes cluster. It can be seen as a specific kind of distributed system where","upstream":"https://glossary.cncf.io/cluster/","hi":"क्लस्टर (Cluster)"},"scalability":{"title":"Scalability","gloss":"Scalability refers to how well a system can grow. That is increasing the ability to do whatever the system is supposed to do. For example, a Kubernetes cluster scales by increasing or reducing the number of containerized apps, but that scalability depends on s","upstream":"https://glossary.cncf.io/scalability/","hi":"मापनीयता (Scalability)"},"nodes":{"title":"Nodes","gloss":"A node is a computer that works in concert with other computers, or nodes, to accomplish a common task. Take your laptop, modem, and printer, for example. They are all connected over your wifi network communicating and collaborating, each representing one node","upstream":"https://glossary.cncf.io/nodes/","hi":"नोड्स (Nodes)"},"kubernetes":{"title":"Kubernetes","gloss":"Kubernetes, often abbreviated as K8s, is an open source container orchestrator. It automates the lifecycle of containerized applications on modern infrastructures, functioning as a \"datacenter operating system\" that manages applications across a distributed sy","upstream":"https://glossary.cncf.io/kubernetes/","hi":"कुबेरनेट्स (Kubernetes)"},"idempotence":{"title":"Idempotence","gloss":"In maths or computer science, idempotence describes an operation that always leads to the same outcome, no matter how many times you execute it. If the parameters are the same, executing an idempotent operation several times will have no additional effect.","upstream":"https://glossary.cncf.io/idempotence/","hi":"इडेमपोटेन्स (Idempotence)"},"pod":{"title":"Pod","gloss":"Within a Kubernetes environment, a pod acts as the most basic deployable unit. It represents an essential building block for deploying and managing containerized applications. Each pod contains a single application instance and can hold one or more containers.","upstream":"https://glossary.cncf.io/pod/","hi":null},"service":{"title":"Service","gloss":"Please note that in IT, service has multiple meanings. In this definition, we'll focus on the more traditional one: service as in microservice. How or even if services differ from microservices is nuanced and different people may have different opinions. For a","upstream":"https://glossary.cncf.io/service/","hi":"सेवा(Service)"},"abstraction":{"title":"Abstraction","gloss":"In the context of computing, an abstraction is a representation that hides specifics from a consumer of services (a consumer being a computer program or human), making a system more generic and thus easily understood. A good example is your laptop's operating ","upstream":"https://glossary.cncf.io/abstraction/","hi":"ऐब्स्ट्रैक्शन (Abstraction)"},"application-programming-interface":{"title":"Application Programming Interface (API)","gloss":"An API is a way for computer programs to interact with each other. Just as humans interact with a website via a web page, an API allows computer programs to interact with each other. Unlike human interactions, APIs have limitations on what can and cannot be as","upstream":"https://glossary.cncf.io/application-programming-interface/","hi":"एप्लीकेशन प्रोग्रामिंग इंटरफ़ेस (Application Programming Interface)"},"stateful-apps":{"title":"Stateful Apps","gloss":"When we speak of stateful (and stateless) apps, state refers to any data the app needs to store to function as designed. Any kind of online shop that remembers your cart is a stateful app for example. Today, most applications we use are at least partly statefu","upstream":"https://glossary.cncf.io/stateful-apps/","hi":null},"service-mesh":{"title":"Service Mesh","gloss":"In a microservices world, apps are broken down into multiple smaller services that communicate over a network. Just like your wifi network, computer networks are intrinsically unreliable, hackable, and often slow. Service meshes address this new set of challen","upstream":"https://glossary.cncf.io/service-mesh/","hi":"सर्विस मेश (Service Mesh)"},"service-proxy":{"title":"Service Proxy","gloss":"A service proxy intercepts traffic to or from a given service, applies some logic to it, then forwards that traffic to another service. It essentially acts as a “go-between” that collects information about network traffic and/or applies rules to it.","upstream":"https://glossary.cncf.io/service-proxy/","hi":"सर्विस प्रॉक्सी (Service Proxy)"},"sidecar-container":{"title":"Sidecar Container","gloss":"The Sidecar Container is an implementation of the sidecar pattern. An application deployed on a second container will run side by side and share its lifecycle with a primary application running on a main container.","upstream":"https://glossary.cncf.io/sidecar-container/","hi":null},"observability":{"title":"Observability","gloss":"Observability is a system property that defines the degree to which the system can generate actionable insights. It allows users to understand a system's state from these external outputs and take (corrective) action. Computer systems are measured by observing","upstream":"https://glossary.cncf.io/observability/","hi":"ऑब्जर्वेबिलिटी (Observability)"},"gitops":{"title":"GitOps","gloss":"GitOps is a set of practices for managing software applications and infrastructure by continuously evaluating and reconciling their desired states as defined in a version control system such as Git against their actual state. Reconciling states includes changi","upstream":"https://glossary.cncf.io/gitops/","hi":null},"continuous-delivery":{"title":"Continuous Delivery (CD)","gloss":"Continuous delivery, often abbreviated as CD, is a set of practices in which code changes are automatically deployed into an acceptance environment (or, in the case of continuous deployment, into production). CD crucially includes procedures to ensure that sof","upstream":"https://glossary.cncf.io/continuous-delivery/","hi":"निरंतर डिलीवरी (Continuous Delivery; CD)"},"zero-trust-architecture":{"title":"Zero Trust Architecture","gloss":"Zero trust architecture prescribes to an approach to the design and implementation of IT systems where trust is completely removed. The core principle being \"never trust, always verify\", devices or systems themselves, whilst communicating to other components o","upstream":"https://glossary.cncf.io/zero-trust-architecture/","hi":"ज़ीरो ट्रस्ट आर्किटेक्चर (Zero Trust Architecture)"},"policy-as-code":{"title":"Policy as Code (PaC)","gloss":"Policy as Code is the practice of storing the definition of policies as one or more files in machine-readable and processable form. This replaces the traditional model where policies are documented in human-readable form in separate documents.","upstream":"https://glossary.cncf.io/policy-as-code/","hi":null},"shift-left":{"title":"Shift Left","gloss":"Left in Shift Left refers to earlier stages in a software development lifecycle, thinking of the lifecycle as a line where stages are executed from left to right. Shift Left is the practice of implementing tests, security, or other development practices early ","upstream":"https://glossary.cncf.io/shift-left/","hi":"शिफ्ट लेफ्ट (Shift Left)"},"platform-engineering":{"title":"Platform Engineering","gloss":"Platform engineering is the art of building tools and processes that empower software developers. It's like creating a self-service station specifically designed to meet developers' needs throughout the software creation journey. By providing these tools and w","upstream":"https://glossary.cncf.io/platform-engineering/","hi":null},"auto-scaling":{"title":"Autoscaling","gloss":"Autoscaling is the ability of a system to scale automatically, typically, in terms of computing resources. With an autoscaling system, resources are automatically added when needed and can scale to meet fluctuating user demands. The autoscaling process varies ","upstream":"https://glossary.cncf.io/auto-scaling/","hi":"ऑटो स्केलिंग (Auto Scaling)"}};</script>
 <script>(function () {
   'use strict';
   var reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;

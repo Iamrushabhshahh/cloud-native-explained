@@ -120,6 +120,13 @@ const conceptHtml = (c, i) => `
 
 const SITE = 'https://rushabhshah.dev';
 const PAGE_URL = `${SITE}/cloud-native-explained/`;
+/* Six parts plus three reference sections no longer fit a single line at laptop
+   width, and the full titles were pushing everything after part 5 off the edge.
+   The full title stays in a title attribute. */
+const NAV_SHORT = {
+  orientation: 'Orientation', containers: 'Containers', orchestration: 'Orchestration',
+  interfaces: 'Interfaces', layers: 'Layers', governance: 'Governance',
+};
 /* Shorter and blunter than the meta description, because a social card is read
    in a feed at a glance rather than in a results list. */
 const SOCIAL_DESC = 'A guided route through cloud native for anyone who opened landscape.cncf.io, saw a thousand logos and closed the tab. Every acronym earned before it is used.';
@@ -217,13 +224,16 @@ const html = `<!DOCTYPE html>
 <div id="prog"></div>
 <a href="#main" class="skip">Skip to content</a>
 
-<nav id="nav"><div class="navin">
-  <span class="brand">Cloud Native, Explained</span>
-  ${PARTS.map(p => `<a href="#${p.id}">${p.num}. ${esc(p.title)}</a>`).join('')}
-  <a href="#roles">Roles</a>
-  <a href="#glossary">Glossary</a>
+<nav id="nav">
+  <div class="navin">
+    <span class="brand">Cloud Native, Explained</span>
+    ${PARTS.map(p => `<a href="#${p.id}" title="${esc(p.title)}">${p.num}. ${esc(NAV_SHORT[p.id] || p.title)}</a>`).join('')}
+    <a href="#roles">Roles</a>
+    <a href="#acronyms">Acronyms</a>
+    <a href="#glossary">Glossary</a>
+  </div>
   <button id="theme" type="button" aria-label="Switch theme">◐</button>
-</div></nav>
+</nav>
 
 <main id="main" class="wrap">
   <header class="mast">
@@ -257,6 +267,23 @@ const html = `<!DOCTYPE html>
     <header class="ph"><span class="pn">Next</span><h2>Still being written</h2>
     <p class="pb">The path continues. These are structured but not yet written, so the shape is honest about what exists today.</p></header>
     ${PLANNED.map(p => `<div class="pl"><span class="pn2">Part ${p.num}</span><h3>${esc(p.title)}</h3><p>${esc(p.blurb)}</p></div>`).join('')}
+  </section>
+
+  <section class="part" id="acronyms">
+    <header class="ph"><span class="pn">Reference</span><h2>Every acronym, in the order the guide introduces it</h2>
+    <p class="pb">The build refuses to compile if any of these appears in the prose before the concept that introduces it, so this table is also the reading order. If you landed here from a search, the third column is the section that explains it properly.</p></header>
+    <div class="acrotable">
+      <div class="acro-hd"><span>Acronym</span><span>Stands for</span><span>Introduced in</span></div>
+      ${[...coinedBy.entries()].sort((a,b)=>a[1]-b[1]).map(([short, idx]) => {
+        const c = concepts[idx];
+        const k = (c.coins || []).find(x => x.short === short);
+        return `<a class="acro" href="#${c.id}">
+          <span class="ac-s">${esc(short)}</span>
+          <span class="ac-l">${esc(k.long)}</span>
+          <span class="ac-w">Part ${c.part.num} &middot; ${esc(c.title)}</span>
+        </a>`;
+      }).join('')}
+    </div>
   </section>
 
   <section class="part" id="glossary">

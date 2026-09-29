@@ -17,8 +17,12 @@
 #nav{position:sticky;top:0;z-index:50;
   background:color-mix(in srgb,var(--bg-color) 88%,transparent);
   backdrop-filter:blur(12px);border-bottom:1px solid var(--border-color)}
+#nav{display:flex;align-items:center;gap:8px;padding-right:14px}
 .navin{max-width:1080px;margin:0 auto;display:flex;align-items:center;gap:4px;padding:10px 20px;
-  overflow-x:auto;scrollbar-width:none}
+  overflow-x:auto;scrollbar-width:none;flex:1 1 auto;min-width:0;
+  /* fades at the edges so it is visible that the strip scrolls */
+  -webkit-mask-image:linear-gradient(to right,transparent,#000 18px,#000 calc(100% - 18px),transparent);
+  mask-image:linear-gradient(to right,transparent,#000 18px,#000 calc(100% - 18px),transparent)}
 .navin::-webkit-scrollbar{display:none}
 .brand{font-family:'Fira Code','Fira-Code-fallback',monospace;font-weight:700;font-size:13px;
   color:var(--fg-strong);margin-right:14px;white-space:nowrap;flex:0 0 auto;letter-spacing:-.02em}
@@ -29,7 +33,7 @@
 .navin a::before{content:'./';opacity:.5}
 .navin a:hover{color:var(--fg-strong);background:var(--terminal-header)}
 .navin a.cur{color:var(--primary-color);border-color:var(--border-color);background:var(--panel-color)}
-#theme{margin-left:auto;flex:0 0 auto;background:none;border:1px solid var(--border-color);
+#theme{flex:0 0 auto;background:none;border:1px solid var(--border-color);
   color:var(--muted-color);width:30px;height:30px;border-radius:50%;cursor:pointer;font-size:13px}
 #theme:hover{color:var(--fg-strong);border-color:var(--primary-color)}
 
@@ -216,3 +220,20 @@
 .gi{transition:border-color .15s}
 .gi[open]{border-color:var(--primary-color)}
 .gi[open] summary{color:var(--primary-color)}
+
+/* ---- acronym index ---- */
+.acrotable{border:1px solid var(--border-color);border-radius:8px;overflow:hidden;background:var(--panel-color)}
+.acro-hd,.acro{display:grid;grid-template-columns:100px 1fr 1fr;gap:16px;padding:12px 18px;align-items:baseline}
+.acro-hd{background:var(--terminal-header);font-family:'Fira Code','Fira-Code-fallback',monospace;
+  font-size:10px;letter-spacing:.11em;text-transform:uppercase;color:var(--muted-color);
+  border-bottom:1px solid var(--border-color)}
+.acro{border-bottom:1px solid var(--border-color);text-decoration:none;transition:background .15s}
+.acro:last-child{border-bottom:0}
+.acro:hover{background:var(--terminal-header)}
+.ac-s{font-family:'Fira Code','Fira-Code-fallback',monospace;font-weight:700;font-size:14px;color:var(--primary-color)}
+.ac-l{font-size:14px;color:var(--fg-strong)}
+.ac-w{font-family:'Fira Code','Fira-Code-fallback',monospace;font-size:11.5px;color:var(--muted-color)}
+@media (max-width:700px){
+  .acro-hd{display:none}
+  .acro{grid-template-columns:1fr;gap:3px;padding:14px 16px}
+}
