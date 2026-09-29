@@ -96,6 +96,11 @@ const tip = (label, key) => {
 /* Marks up prose: **bold**, `code`, and [[slug|label]] vocabulary links. */
 const rich = (s = '') => esc(s)
   .replace(/\[\[([^\]|]+)\|([^\]]+)\]\]/g, (_m, k, l) => tip(l, k))
+  /* Standard markdown links too. The vocabulary form above is [[slug|label]];
+     without this, an ordinary [label](/path/) written in the prose renders as
+     literal brackets, which is exactly the bug just fixed in the glossary
+     extractor and which I then reintroduced by hand in the CNI section. */
+  .replace(/\[([^\]]+)\]\((\/[^)\s]+)\)/g, '<a href="$2">$1</a>')
   .replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>')
   .replace(/`([^`]+)`/g, '<code>$1</code>');
 
