@@ -169,7 +169,13 @@ const html = `<!DOCTYPE html>
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Cloud Native, Explained</title>
 <meta name="description" content="A guided path through cloud native: every acronym earned before it is used, and defined where it appears. Built on CNCF's own open glossary.">
-<meta name="robots" content="noindex,nofollow">
+<!-- Kept out of search while parts 4 to 6 are unwritten, but NOT with a blanket
+     robots noindex: Twitterbot and the other card crawlers respect that
+     directive, so a blanket noindex means the link shares as a bare URL with no
+     image. Naming the search engines specifically keeps it unindexed while
+     leaving social unfurls working, which is the actual intent. -->
+<meta name="googlebot" content="noindex">
+<meta name="bingbot" content="noindex">
 <link rel="canonical" href="${PAGE_URL}">
 <!-- Social cards are worth setting even while the page is noindex: robots
      governs search indexing, not what LinkedIn, X or Slack render when someone
