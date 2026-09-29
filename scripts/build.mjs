@@ -104,6 +104,10 @@ const conceptHtml = (c, i) => `
 </article>`;
 
 const SITE = 'https://rushabhshah.dev';
+const PAGE_URL = `${SITE}/cloud-native-explained/`;
+/* Shorter and blunter than the meta description, because a social card is read
+   in a feed at a glance rather than in a results list. */
+const SOCIAL_DESC = 'A guided route through cloud native for anyone who opened landscape.cncf.io, saw a thousand logos and closed the tab. Every acronym earned before it is used.';
 /* Certs without a dedicated page go to the coupon hub, never to a /go/ redirect.
    A /go/ link is a noindex bounce straight to the affiliate network: the reader
    loses the explanation, and the page that would have shown them the evergreen
@@ -166,6 +170,25 @@ const html = `<!DOCTYPE html>
 <title>Cloud Native, Explained</title>
 <meta name="description" content="A guided path through cloud native: every acronym earned before it is used, and defined where it appears. Built on CNCF's own open glossary.">
 <meta name="robots" content="noindex,nofollow">
+<link rel="canonical" href="${PAGE_URL}">
+<!-- Social cards are worth setting even while the page is noindex: robots
+     governs search indexing, not what LinkedIn, X or Slack render when someone
+     pastes the link, and this gets shared long before it gets indexed. -->
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="rushabhshah.dev">
+<meta property="og:url" content="${PAGE_URL}">
+<meta property="og:title" content="Cloud Native, Explained">
+<meta property="og:description" content="${esc(SOCIAL_DESC)}">
+<meta property="og:image" content="${PAGE_URL}og.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Card reading: the landscape is a hierarchy pretending to be a wall. rushabhshah.dev">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@iamrushabhshahh">
+<meta name="twitter:creator" content="@iamrushabhshahh">
+<meta name="twitter:title" content="Cloud Native, Explained">
+<meta name="twitter:description" content="${esc(SOCIAL_DESC)}">
+<meta name="twitter:image" content="${PAGE_URL}og.jpg">
 <script>(function(){try{var p=localStorage.getItem('theme');if(p!=='light'&&p!=='dark')p='system';var r=p==='system'?(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light'):p;var h=document.documentElement;h.dataset.theme=r;h.dataset.pref=p;h.style.colorScheme=r;}catch(e){}})();</script>
 <style>${css}</style>
 </head>
