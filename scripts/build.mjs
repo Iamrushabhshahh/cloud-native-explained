@@ -205,7 +205,7 @@ const html = `<!DOCTYPE html>
 <meta name="twitter:title" content="Cloud Native, Explained">
 <meta name="twitter:description" content="${esc(SOCIAL_DESC)}">
 <meta name="twitter:image" content="${PAGE_URL}og.jpg">
-<script>(function(){try{var p=localStorage.getItem('theme');if(p!=='light'&&p!=='dark')p='system';var r=p==='system'?(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light'):p;var h=document.documentElement;h.dataset.theme=r;h.dataset.pref=p;h.style.colorScheme=r;}catch(e){}})();</script>
+<script>(function(){try{var p=localStorage.getItem('theme');if(p!=='light'&&p!=='dark')p='system';var r=p==='system'?(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light'):p;var h=document.documentElement;h.dataset.theme=r;h.dataset.pref=p;h.style.colorScheme=r;}catch(e){}document.documentElement.classList.add('js');})();</script>
 <style>${css}</style>
 </head>
 <body>

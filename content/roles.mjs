@@ -34,7 +34,7 @@ export const ROLES = [
     ],
     cert: { name: 'KCNA', full: 'Kubernetes and Cloud Native Associate', page: '/linux-foundation-coupon/kcna/' },
     alt: { name: 'LFCA', full: 'Linux Foundation Certified IT Associate', page: '/linux-foundation-coupon/lfca/' },
-    verdict: 'KCNA is the one cert on this list that is genuinely useful without experience, because it certifies vocabulary and vocabulary is what you are missing. It is multiple choice and it will not get you hired on its own. If you cannot yet navigate a shell comfortably, do LFCA first and come back.',
+    verdict: 'KCNA is the one certification here that is genuinely useful before you have experience, because what it certifies is vocabulary, and vocabulary is exactly what you are short of. It is multiple choice. It will not get you hired on its own and anyone telling you otherwise is selling something. If you cannot yet move around a shell without thinking, do LFCA first and come back to this.',
   },
   {
     id: 'k8s-admin', title: 'Kubernetes Administrator', tagline: 'Runs the clusters other people deploy to.',
@@ -51,7 +51,7 @@ export const ROLES = [
       { t: 'Cluster upgrades and node drain without dropping traffic' },
     ],
     cert: { name: 'CKA', full: 'Certified Kubernetes Administrator', page: '/linux-foundation-coupon/cka/' },
-    verdict: 'This is the one hiring managers actually check, and unusually for a certification it is worth the money: it is a live terminal against broken clusters, not multiple choice, so passing it is evidence you can do the work rather than describe it. Do not sit it without months of real kubectl time.',
+    verdict: 'This is the one hiring managers actually check, and unusually for a certification it is worth the money. It is a live terminal against broken clusters, not multiple choice, so passing it is evidence you can do the job instead of describe it. The flip side: do not book it until you have months of real kubectl behind you. It is a speed test as much as a knowledge test, and people fail it on the clock, not the content.',
   },
   {
     id: 'k8s-dev', title: 'Application Developer on Kubernetes', tagline: 'Ships services to a cluster someone else runs.',
@@ -67,7 +67,7 @@ export const ROLES = [
       { t: 'Multi-container patterns, sidecars and init containers' },
     ],
     cert: { name: 'CKAD', full: 'Certified Kubernetes Application Developer', page: '/linux-foundation-coupon/ckad/' },
-    verdict: 'Narrower than CKA rather than easier. It skips cluster administration and goes deeper on the application layer. Worth it if you deploy to Kubernetes but will never run it; if you might end up owning the cluster, CKA is the better single purchase.',
+    verdict: 'Narrower than the CKA, not easier. It drops cluster administration and goes deeper on the application layer, which is where you actually live if someone else runs the cluster. Take it if that is genuinely your job and will stay that way. If there is any chance you end up owning the cluster, the CKA is the better single purchase and covers more ground.',
   },
   {
     id: 'k8s-security', title: 'Kubernetes Security Specialist', tagline: 'Hardens clusters and the supply chain feeding them.',
@@ -83,7 +83,7 @@ export const ROLES = [
     ],
     cert: { name: 'CKS', full: 'Certified Kubernetes Security Specialist', page: '/linux-foundation-coupon/cks/' },
     alt: { name: 'KCSA', full: 'Kubernetes and Cloud Native Security Associate', page: '/linux-foundation-coupon/kcsa/' },
-    verdict: 'CKS carries the strongest security signal in this catalogue and requires an active CKA to sit, so budget for both. KCSA is the multiple-choice associate version: useful as a stepping stone or if you work alongside security rather than in it, but it is not a substitute.',
+    verdict: 'CKS carries the strongest security signal in this catalogue and needs an active CKA to even sit, so budget for two exams and a longer runway. KCSA is the multiple-choice associate version. It is a reasonable stepping stone, and it is useful if you work alongside security rather than in it, but do not mistake it for the same credential.',
   },
   {
     id: 'linux', title: 'Linux / Systems Administrator', tagline: 'The layer everything above assumes you already know.',
@@ -98,7 +98,7 @@ export const ROLES = [
       { t: 'Shell scripting good enough to automate your own work' },
     ],
     cert: { name: 'LFCS', full: 'Linux Foundation Certified System Administrator', page: '/linux-foundation-coupon/lfcs/' },
-    verdict: 'Performance-based like CKA, and the most transferable certification here because Linux does not churn. If you are strong on Kubernetes but vague on what the kernel is doing underneath, this closes the gap that eventually shows up in an incident.',
+    verdict: 'Performance-based like the CKA, and the most durable certification on this page, because Linux does not churn the way the ecosystem above it does. What you learn here is still true in ten years. If you are strong on Kubernetes but go quiet when someone asks what the kernel is actually doing, this closes the gap that eventually shows up in an incident at a bad hour.',
   },
   {
     id: 'observability', title: 'Observability Engineer', tagline: 'Makes systems explain themselves before they fail.',
@@ -114,7 +114,7 @@ export const ROLES = [
     ],
     cert: { name: 'PCA', full: 'Prometheus Certified Associate', page: '/linux-foundation-coupon/pca/' },
     alt: { name: 'OTCA', full: 'OpenTelemetry Certified Associate', page: '/linux-foundation-coupon/otca/' },
-    verdict: 'Both are multiple choice and neither will get you hired alone. They are worth it as a forcing function: PCA makes you learn PromQL properly, which most people fake for years. Take PCA if you own alerts, OTCA if you own instrumentation, and skip both if you already do this daily and nobody is asking you to prove it.',
+    verdict: 'Both are multiple choice and neither gets you hired on its own. Where they earn their keep is as a forcing function. PCA makes you learn PromQL properly, which a lot of people fake for years by copying queries from a dashboard someone else built. Take PCA if you own alerts, OTCA if you own instrumentation, and skip both if you already do this daily and nobody is asking you to prove it.',
   },
   {
     id: 'platform', title: 'Platform Engineer', tagline: 'Builds the paved road other teams ship on.',
@@ -128,7 +128,7 @@ export const ROLES = [
       { t: 'Cost and capacity as a platform concern, not an afterthought' },
     ],
     cert: { name: 'CNPE', full: 'Certified Cloud Native Platform Engineer', page: '/linux-foundation-coupon/cnpe/' },
-    verdict: 'The newest and most senior of these, and the only one aimed at design judgement rather than operation. Worth it once you are already doing platform work; it is a poor first certification because it assumes everything in the administrator path.',
+    verdict: 'The most senior exam here and the only one testing design judgement instead of operation. Worth it once you are already doing the work. A poor first certification, because it quietly assumes everything in the administrator path, and sitting it early mostly teaches you what you do not know yet.',
   },
   {
     id: 'gitops', title: 'GitOps / Delivery Engineer', tagline: 'Makes deployment boring and reversible.',
@@ -143,7 +143,7 @@ export const ROLES = [
     ],
     cert: { name: 'CGOA', full: 'Certified GitOps Associate', page: '/linux-foundation-coupon/cgoa/' },
     alt: { name: 'CAPA', full: 'Certified Argo Project Associate', page: '/linux-foundation-coupon/capa/' },
-    verdict: 'CGOA covers the principles and is tool-agnostic; CAPA is specifically Argo. Both are associate-level multiple choice. If your shop already runs Argo, CAPA is the more immediately useful of the two, but neither is a hiring signal on the level of CKA.',
+    verdict: 'CGOA covers principles and is tool-agnostic. CAPA is specifically Argo, and check the weighting before you buy it: Workflows is the biggest domain at 36%, ahead of Argo CD. If you came for GitOps and have never run a Workflow, that is a third of the paper on something you do not use. Neither is a hiring signal on the level of the CKA, and I would not pretend otherwise.',
   },
   {
     id: 'networking', title: 'Networking / Service Mesh', tagline: 'Owns how anything reaches anything else.',
@@ -158,7 +158,7 @@ export const ROLES = [
     ],
     cert: { name: 'ICA', full: 'Istio Certified Associate', page: '/linux-foundation-coupon/ica/' },
     alt: { name: 'CCA', full: 'Cilium Certified Associate', page: '/linux-foundation-coupon/cca/' },
-    verdict: 'Both are tool-specific, so pick the one you actually run rather than the one that sounds better. If you run neither, learn the CNI layer properly first; a mesh certification on top of shaky networking fundamentals is a bad trade.',
+    verdict: 'Both are tool-specific, so take the one you actually run, not the one that sounds better on a profile. If you run neither, learn the CNI layer properly first. A mesh certification sitting on shaky networking fundamentals is an expensive way to memorise YAML you will not understand when it breaks.',
   },
   {
     id: 'ai-infra', title: 'AI / Agent Infrastructure', tagline: 'The newest role here, and the least settled.',
@@ -172,7 +172,7 @@ export const ROLES = [
     ],
     cert: { name: 'MCPA', full: 'Model Context Protocol Associate', page: '/linux-foundation-coupon/mcpa/' },
     alt: { name: 'PTCA', full: 'PyTorch Certified Associate', page: '/linux-foundation-coupon/ptca/' },
-    verdict: 'Brand new, launched September 2026, and the first certification against MCP. Beginner level and multiple choice, so treat it as evidence you have thought about the protocol and its trust model, not as a senior credential. Half the exam is runtime behaviour and security, which is the half people get wrong.',
+    verdict: 'MCPA launched in September 2026 and is the first certification against MCP, so there is almost nobody holding it yet. Beginner level, multiple choice. Treat it as evidence you have thought about the protocol and its trust model, not as a senior credential. Half the exam is runtime behaviour and security, which is the half people get wrong, and honestly the half worth learning whether or not you sit it.',
   },
   {
     id: 'finops', title: 'FinOps / Cloud Cost', tagline: 'The role that pays for itself, literally.',
@@ -186,7 +186,7 @@ export const ROLES = [
       { t: 'Showback and chargeback without starting a civil war' },
     ],
     cert: { name: 'FOCP', full: 'FinOps Certified Practitioner', page: '/finops-coupon/practitioner/' },
-    verdict: 'A different foundation and a different checkout from everything else on this page, so the Linux Foundation code does not apply to it. Genuinely useful if you are the person being asked why the bill went up, and close to useless if nobody has asked you that yet.',
+    verdict: 'A different foundation and a different checkout, so the Linux Foundation code does not touch it. Genuinely useful if you are the person being asked why the bill went up, and close to useless if nobody has asked you that yet. I have done the cost-reduction work and the hard part was never the tooling, it was getting engineers to care before finance did.',
   },
   {
     id: 'kubestronaut', title: 'The completionist', tagline: 'Collecting the full set, deliberately.',
@@ -201,6 +201,6 @@ export const ROLES = [
     ],
     cert: { name: 'Kubestronaut bundle', full: 'KCNA + KCSA + CKA + CKAD + CKS', page: '/linux-foundation-coupon/kubestronaut/' },
     alt: { name: 'Golden Kubestronaut', full: 'All 16 certifications', page: '/linux-foundation-coupon/golden-kubestronaut/' },
-    verdict: 'Be honest with yourself about why. As a learning structure it is excellent, and the bundles cost meaningfully less than buying the exams one at a time. As a hiring signal, the fifth certification adds far less than the first did. If you already hold one or two, the upgrade bundles exist so you are not paying twice.',
+    verdict: 'Be honest with yourself about why you want this. As a structure for learning it is excellent, and the bundles cost meaningfully less than buying five exams one at a time. As a hiring signal, the fifth certification adds far less than the first did. If you already hold one or two, the upgrade bundles exist precisely so you are not paying twice for the same exam.',
   },
 ];
