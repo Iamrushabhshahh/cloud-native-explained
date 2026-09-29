@@ -11,6 +11,16 @@ const ROOT = path.resolve(import.meta.dirname, '..');
 const OUT = ROOT;
 const G = JSON.parse(fs.readFileSync(path.join(ROOT, 'content', 'glossary.json'), 'utf8'));
 
+/* Cut at the last space before the limit, not at the limit. 51 of the 84
+   excerpts are long enough to be truncated and every one of them was being
+   sliced mid-word. */
+const excerpt = (s = '', max = 420) => {
+  const t = String(s);
+  if (t.length <= max) return t;
+  const cut = t.slice(0, max);
+  return cut.slice(0, cut.lastIndexOf(' ')).replace(/[,;:.]$/, '') + '…';
+};
+
 const esc = (s = '') => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 const concepts = PARTS.flatMap(p => p.concepts.map(c => ({ ...c, part: p })));
 
@@ -252,7 +262,7 @@ const html = `<!DOCTYPE html>
       ${Object.values(G.en).sort((a, b) => a.title.localeCompare(b.title)).map(t => `
       <details class="gi" data-s="${esc((t.title + ' ' + (t.tags || []).join(' ')).toLowerCase())}">
         <summary>${esc(t.title)}${G.hi[t.slug] ? '<span class="hi" title="Also available in Hindi">हिन्दी</span>' : ''}</summary>
-        <p>${esc((t.lead || '').slice(0, 420))}</p>
+        <p>${esc(excerpt(t.lead || ''))}</p>
         <a href="${esc(t.upstream)}" target="_blank" rel="noopener">Full definition, glossary.cncf.io →</a>
       </details>`).join('')}
     </div>

@@ -7,6 +7,23 @@ import fs from 'node:fs';
 import path from 'node:path';
 
 const ROOT = path.resolve(import.meta.dirname, '..');
+/* Upstream definitions are markdown, and they cross-reference each other
+   heavily: 53 of the 84 terms carry at least one [label](/slug/) link, and
+   scalability alone has seven. Rendered as escaped text those arrive on the page
+   as literal "[microservices](/microservices-architecture/)", which is what was
+   shipping. The link targets are glossary.cncf.io paths that do not resolve on
+   this site anyway, and each card already carries a "full definition" link, so
+   the right move is to keep the label and drop the syntax rather than rewrite 53
+   sets of cross-references into working links inside a truncated excerpt. */
+const demarkdown = (s = '') => s
+  .replace(/!\[[^\]]*\]\([^)]*\)/g, '')            // images, no place in an excerpt
+  .replace(/\[([^\]]+)\]\([^)]*\)/g, '$1')         // links -> their label
+  .replace(/`([^`]+)`/g, '$1')                      // inline code
+  .replace(/\*\*([^*]+)\*\*/g, '$1')               // bold
+  .replace(/(?<!\w)_([^_]+)_(?!\w)/g, '$1')         // italics, not snake_case
+  .replace(/\s+/g, ' ')
+  .trim();
+
 const parse = (raw) => {
   const m = raw.match(/^---\n([\s\S]*?)\n---\n([\s\S]*)$/);
   if (!m) return null;
@@ -21,10 +38,10 @@ const parse = (raw) => {
   const body = m[2];
   const section = (name) => {
     const s = body.match(new RegExp(`## ${name}\\n([\\s\\S]*?)(?=\\n## |$)`, 'i'));
-    return s ? s[1].trim().replace(/\n+/g, ' ') : null;
+    return s ? demarkdown(s[1]) : null;
   };
   // Lead paragraph = everything before the first ##
-  const lead = body.split(/\n## /)[0].trim().replace(/\n+/g, ' ');
+  const lead = demarkdown(body.split(/\n## /)[0]);
   return { fm, lead, problem: section('Problem it addresses'), helps: section('How it helps') };
 };
 

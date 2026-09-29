@@ -203,3 +203,11 @@
    plain text, so the second recommendation looked like a dead footnote. */
 .rca a{color:var(--primary-color);text-decoration:none;font-weight:600}
 .rca a:hover{text-decoration:underline;text-underline-offset:3px}
+
+/* Grid rows stretch to their tallest item by default, so opening one glossary
+   card dragged both of its neighbours to the same height and looked like the
+   whole row had opened. Each card should size to its own content. */
+.glist{align-items:start}
+.gi{transition:border-color .15s}
+.gi[open]{border-color:var(--primary-color)}
+.gi[open] summary{color:var(--primary-color)}
