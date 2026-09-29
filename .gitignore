@@ -1,3 +1,4 @@
-dist/
-.cache-glossary/
 node_modules/
+.cache-glossary/
+dist/
+.preview/

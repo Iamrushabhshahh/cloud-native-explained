@@ -4,7 +4,11 @@ import { PARTS, PLANNED } from '../content/path.mjs';
 import { ROLES } from '../content/roles.mjs';
 
 const ROOT = path.resolve(import.meta.dirname, '..');
-const OUT = path.join(ROOT, 'dist');
+/* Output at the repo root, not dist/. GitHub Pages serves a project repo at
+   <domain>/<repo>/, reading from the branch root, and the main site already
+   follows the pattern of committing generated HTML. dist/ would need a second
+   deploy step for no benefit. */
+const OUT = ROOT;
 const G = JSON.parse(fs.readFileSync(path.join(ROOT, 'content', 'glossary.json'), 'utf8'));
 
 const esc = (s = '') => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
@@ -147,9 +151,9 @@ const partHtml = (p) => `
    the copy exists so the local preview looks identical. */
 const SITE_ROOT = path.resolve(ROOT, '..', 'iamrushabhshahh.github.io');
 const siteCss = fs.readFileSync(path.join(SITE_ROOT, 'style.css'), 'utf8');
-fs.mkdirSync(path.join(OUT, 'assets', 'fonts'), { recursive: true });
+fs.mkdirSync(path.join(ROOT, '.preview', 'assets', 'fonts'), { recursive: true });
 for (const f of fs.readdirSync(path.join(SITE_ROOT, 'assets', 'fonts'))) {
-  fs.copyFileSync(path.join(SITE_ROOT, 'assets', 'fonts', f), path.join(OUT, 'assets', 'fonts', f));
+  fs.copyFileSync(path.join(SITE_ROOT, 'assets', 'fonts', f), path.join(ROOT, '.preview', 'assets', 'fonts', f));
 }
 const css = siteCss + '\n' + fs.readFileSync(path.join(ROOT, 'src', 'style.css'), 'utf8');
 const js = fs.readFileSync(path.join(ROOT, 'src', 'app.js'), 'utf8');
